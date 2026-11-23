@@ -77,16 +77,15 @@ To guarantee institutional trust and eliminate algorithmic bias, **LabLink stric
 
 When requests compete for the same equipment window, the engine computes an auditable **Priority Score ($P \in [0, 100]$)**:
 
-$$P = (w_d \cdot S_d) + (w_u \cdot S_u) + (w_w \cdot S_w) + (w_m \cdot S_m)$$
+$$P = (0.50 \cdot S_{\text{urgency}}) + (0.30 \cdot S_{\text{fairShare}}) + (0.20 \cdot S_{\text{waitAge}})$$
 
 | Factor | Weight ($w_i$) | Component Logic & Range (App Demo Policy) |
 | :--- | :--- | :--- |
-| **Deadline Urgency ($S_d$)** | **0.40** | Scored by days remaining ($D$): $D \le 2\text{d} \to 100$, $D \le 5\text{d} \to 85$, $D \le 10\text{d} \to 65$, $D > 20\text{d} \to 25$. |
-| **Scarce Resource Access ($S_u$)** | **0.30** | Inversely proportional to student's booked hours on scarce hardware in the past 14 days ($H$): $S_u = \max(15, 100 - 5H)$. Prevents equipment hoarding. |
-| **Request Waiting Time ($S_w$)** | **0.20** | Scored by waiting age ($A$ in hours since submission): $S_w = \min(100, 20 + 5A)$. Prevents request starvation. |
-| **Requirement Fit ($S_m$)** | **0.10** | Direct match to high-end hardware capabilities ($100$) vs general-purpose overkill usage ($50$). |
+| **Deadline Urgency ($S_{\text{urgency}}$)** | **0.50** | Scored by days remaining ($D$): $S_{\text{urgency}} = 100 \times \operatorname{clamp}(1 - D / 30, 0, 1)$. Earlier project deadlines raise priority. |
+| **Fair-Share Access ($S_{\text{fairShare}}$)** | **0.30** | Inversely proportional to student's booked hours on scarce hardware in the past 14 days ($H$): $S_{\text{fairShare}} = 100 \times \operatorname{clamp}(1 - H / 12, 0, 1)$. Prevents hardware hoarding. |
+| **Request Waiting Time ($S_{\text{waitAge}}$)** | **0.20** | Scored by waiting age ($A$ in hours since submission): $S_{\text{waitAge}} = 100 \times \operatorname{clamp}(A / 72, 0, 1)$. Prevents request starvation. |
 
-$$\sum w_i = 0.40 + 0.30 + 0.20 + 0.10 = 1.00$$
+$$\sum w_i = 0.50 + 0.30 + 0.20 = 1.00$$
 
 *All priority weights represent an auditable application demo policy; academic seniority and subjective status are strictly excluded.*
 

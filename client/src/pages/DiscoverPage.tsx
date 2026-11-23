@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useScenario } from '../context/ScenarioContext.js';
 import { StatusGlyph } from '../components/common/StatusGlyph.js';
 import { Resource } from 'shared';
+import { checkSlotFeasibility } from '../utils/feasibility.js';
 
 export function DiscoverPage() {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ export function DiscoverPage() {
     });
   }, [scenario.resources, selectedDept, selectedCategory, searchQuery]);
 
-  // Generate 4 upcoming sample slot windows inside 08:00 - 20:00 operating hours
+  // Generate upcoming slot windows evaluated against domain feasibility engine
   const generateSampleSlots = (resource: Resource) => {
     const now = new Date();
     const slots = [];
@@ -55,7 +56,7 @@ export function DiscoverPage() {
       d.setDate(d.getDate() + dayOffset);
       const dateStr = d.toISOString().split('T')[0];
 
-      // Sample windows
+      // Standard institutional slot windows
       const windows = [
         { start: '09:00', end: '11:00' },
         { start: '11:30', end: '13:30' },
@@ -64,23 +65,49 @@ export function DiscoverPage() {
       ];
 
       for (const w of windows) {
-        // Check if there is an existing booking on this slot
-        const isBooked = scenario.bookings.some(
-          (b) => b.resourceId === resource.id && b.date === dateStr && b.startTime === w.start
-        );
-        const isContested = scenario.requests.some(
-          (r) =>
-            r.items.some((i) => i.resourceId === resource.id) &&
-            r.requestedSlot.date === dateStr &&
-            r.requestedSlot.startTime === w.start
-        );
+        // Run full domain feasibility check (operating hours, safety certs, collision + buffer)
+        const feasibility = checkSlotFeasibility({
+          resource,
+          user: currentUser,
+          slot: { date: dateStr, startTime: w.start, endTime: w.end },
+          existingBookings: scenario.bookings
+        });
+
+        let status: 'available' | 'confirmed' | 'contested' | 'blocked-cert' = 'available';
+        let statusReason = 'Available for allocation';
+
+        if (!feasibility.feasible) {
+          if (feasibility.code === 'SLOT_COLLISION') {
+            status = 'confirmed';
+            statusReason = feasibility.reason || 'Booked by student';
+          } else if (feasibility.code === 'CERTIFICATION_MISSING') {
+            status = 'blocked-cert';
+            statusReason = feasibility.reason || 'Missing required certification';
+          } else {
+            status = 'confirmed';
+            statusReason = feasibility.reason || 'Not feasible';
+          }
+        } else {
+          // If technically feasible, check if there are competing requests in arbitration pool
+          const isContested = scenario.requests.some(
+            (r) =>
+              r.items.some((i) => i.resourceId === resource.id) &&
+              r.requestedSlot.date === dateStr &&
+              r.requestedSlot.startTime === w.start
+          );
+          if (isContested) {
+            status = 'contested';
+            statusReason = 'Contested by active student requests';
+          }
+        }
 
         slots.push({
           date: dateStr,
           dayName: d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }),
           startTime: w.start,
           endTime: w.end,
-          status: isBooked ? 'confirmed' : isContested ? 'contested' : 'available'
+          status,
+          reason: statusReason
         });
       }
     }
@@ -328,6 +355,7 @@ export function DiscoverPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {generateSampleSlots(focusedResource).map((slot, sIdx) => {
                   const isAvail = slot.status === 'available';
+                  const isBlocked = slot.status === 'blocked-cert';
 
                   return (
                     <div
@@ -337,13 +365,21 @@ export function DiscoverPage() {
                           ? 'border-rule hover:border-signal bg-paper'
                           : slot.status === 'contested'
                           ? 'border-signal bg-red-50/20'
+                          : isBlocked
+                          ? 'border-red-300 bg-red-50/30'
                           : 'border-rule-soft bg-tint/60 text-ink-3'
                       }`}
                     >
                       <div>
                         <div className="flex items-center justify-between">
                           <span className="font-bold text-ink">{slot.dayName}</span>
-                          <StatusGlyph status={slot.status as any} />
+                          {isBlocked ? (
+                            <span className="text-[10px] text-signal font-bold uppercase border border-signal px-1">
+                              Locked
+                            </span>
+                          ) : (
+                            <StatusGlyph status={slot.status as any} />
+                          )}
                         </div>
                         <div className="text-sm font-semibold mt-1">
                           {slot.startTime} &ndash; {slot.endTime}
@@ -363,7 +399,7 @@ export function DiscoverPage() {
                         </button>
                       ) : (
                         <span className="text-[10px] text-ink-3 mt-2 block">
-                          {slot.status === 'confirmed' ? 'Slot confirmed to student' : 'Competing requests pending'}
+                          {slot.reason}
                         </span>
                       )}
                     </div>

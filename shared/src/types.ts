@@ -2,6 +2,7 @@ import { z } from 'zod';
 import {
   DepartmentSchema,
   LabSchema,
+  LearningMaterialSchema,
   CertificationSchema,
   UserSchema,
   DemoUserSchema,
@@ -24,6 +25,7 @@ import {
 
 export type Department = z.infer<typeof DepartmentSchema>;
 export type Lab = z.infer<typeof LabSchema>;
+export type LearningMaterial = z.infer<typeof LearningMaterialSchema>;
 export type Certification = z.infer<typeof CertificationSchema>;
 export type User = z.infer<typeof UserSchema>;
 export type DemoUser = z.infer<typeof DemoUserSchema>;

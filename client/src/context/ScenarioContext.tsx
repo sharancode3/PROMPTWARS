@@ -19,6 +19,7 @@ interface ScenarioContextType {
   currentUser: User;
   setRole: (role: DemoRole) => void;
   resetScenario: () => Promise<void>;
+  updateScenario: (updater: (prev: DemoScenario) => DemoScenario) => void;
   submitNewRequest: (req: AccessRequest) => Promise<boolean>;
   runArbitration: (slot: { resourceId: string; date: string; startTime: string; endTime: string }) => Promise<api.ArbitrateResponse>;
   applyArbitrationProposals: (proposals: AllocationProposal[]) => Promise<boolean>;
@@ -194,6 +195,7 @@ export function ScenarioProvider({ children }: { children: React.ReactNode }) {
         currentUser,
         setRole,
         resetScenario,
+        updateScenario: (updater: (prev: DemoScenario) => DemoScenario) => setScenario(updater),
         submitNewRequest,
         runArbitration,
         applyArbitrationProposals,

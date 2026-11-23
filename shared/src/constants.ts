@@ -86,6 +86,14 @@ export const ALLOCATION_STRATEGIES = [
 ] as const;
 export type AllocationStrategy = typeof ALLOCATION_STRATEGIES[number];
 
+export const MATERIAL_TYPES = [
+  'lecture-notes',
+  'sop-checklist',
+  'safety-guideline',
+  'video-reference'
+] as const;
+export type MaterialType = typeof MATERIAL_TYPES[number];
+
 // Transparent Demo Policy Weights & Thresholds (App Policy - Not Organizer Policy)
 export const FAIRNESS_POLICY = {
   WEIGHTS: {

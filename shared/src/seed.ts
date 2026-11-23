@@ -1,4 +1,4 @@
-import { DemoScenario, Department, Resource, User, AccessRequest, Booking } from './types.js';
+import { DemoScenario, Department, Lab, LearningMaterial, Resource, User, AccessRequest, Booking } from './types.js';
 import { DEMO_SCENARIO_VERSION } from './constants.js';
 
 function formatDate(d: Date): string {
@@ -47,11 +47,144 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
     }
   ];
 
+  const labs: Lab[] = [
+    {
+      id: 'lab_mech_auto',
+      departmentId: 'dept_mech',
+      name: 'Autonomous Systems & Robotics Lab',
+      roomNumber: 'Tesla Workshops 102',
+      operatingHours: { open: '08:00', close: '20:00' },
+      coordinatorName: 'Prof. K. Raman',
+      description: 'Embedded robotics testbeds, UAV benches, and NVIDIA Jetson dev kits.',
+      safetyRules: [
+        'Safety goggles mandatory near spinning rotors or mechanical drives',
+        'LiPo battery charging strictly restricted to certified fireproof stations'
+      ]
+    },
+    {
+      id: 'lab_cse_ml',
+      departmentId: 'dept_cse',
+      name: 'Machine Learning & HPC Cluster Lab',
+      roomNumber: 'Turing Hall 308',
+      operatingHours: { open: '08:00', close: '20:00' },
+      coordinatorName: 'Dr. Aris Thorne',
+      description: 'Multi-GPU deep learning training workstations, distributed AI clusters, and LLM inference testbeds.',
+      safetyRules: [
+        'Do not reboot active compute nodes without lab admin clearance',
+        'Verify thermal limits and GPU fan speed curves before starting >4h training jobs'
+      ]
+    },
+    {
+      id: 'lab_ece_digital',
+      departmentId: 'dept_ece',
+      name: 'Digital Systems & VLSI Testing Lab',
+      roomNumber: 'Maxwell Complex 204',
+      operatingHours: { open: '08:00', close: '20:00' },
+      coordinatorName: 'Prof. Radhika Sen',
+      description: 'FPGA emulation stations, sub-nanosecond logic analyzers, and high-speed digital bus verification benches.',
+      safetyRules: [
+        'Always wear grounded ESD wrist straps prior to handling bare semiconductor boards',
+        'Calibrate oscilloscope ground clips before connecting to power distribution networks'
+      ]
+    },
+    {
+      id: 'lab_mech_proto',
+      departmentId: 'dept_mech',
+      name: 'Rapid Prototyping & Additive Manufacturing Workshop',
+      roomNumber: 'Tesla Workshops 105',
+      operatingHours: { open: '08:00', close: '20:00' },
+      coordinatorName: 'Prof. K. Raman',
+      description: 'Industrial stereolithography (SLA) resin printers, fused deposition modeling (FDM), and laser cutting systems.',
+      safetyRules: [
+        'Nitrile gloves and vapor respirator required when dispensing uncured photopolymer resin',
+        'IPA wash tank exhaust must remain switched on during post-curing cycles'
+      ]
+    },
+    {
+      id: 'lab_ece_rf',
+      departmentId: 'dept_ece',
+      name: 'RF & Microwave Wireless Communications Lab',
+      roomNumber: 'Maxwell Complex 202',
+      operatingHours: { open: '08:00', close: '20:00' },
+      coordinatorName: 'Dr. Sandeep Nair',
+      description: 'Precision GHz spectrum analyzers, gigasample oscilloscopes, and software-defined radio test facilities.',
+      safetyRules: [
+        'Maximum input RF power level on spectrum analyzer ports is strictly +20 dBm (100 mW)',
+        'Ensure 50-ohm termination dummy loads on high-power transmitter outputs'
+      ]
+    }
+  ];
+
+  const materials: LearningMaterial[] = [
+    {
+      id: 'mat_jetson_sop',
+      title: 'NVIDIA Jetson AGX Orin Edge Deployment SOP',
+      type: 'sop-checklist',
+      labId: 'lab_mech_auto',
+      resourceId: 'res_jetson_orin_01',
+      topic: 'Autonomous Robotics & Edge Inference',
+      description: 'Standard operating checklist for flashing JetPack 6.0, TensorRT FP16 model compilation, and camera latency profiling.',
+      source: 'Campus Autonomous Systems Lab / Prof. K. Raman',
+      url: 'https://developer.nvidia.com/embedded/jetson-linux',
+      verified: true,
+      isDemo: true
+    },
+    {
+      id: 'mat_clock_skew',
+      title: 'Sub-Nanosecond Clock Skew & Signal Integrity Guide',
+      type: 'lecture-notes',
+      labId: 'lab_ece_digital',
+      resourceId: 'res_keysight_la_01',
+      topic: 'High-Speed Digital Instrumentation',
+      description: 'Detailed technical guide covering setup/hold timing margin validation, multi-channel state acquisition, and probe impedance loading.',
+      source: 'Prof. Radhika Sen — ECE Advanced VLSI Testing',
+      verified: true,
+      isDemo: true
+    },
+    {
+      id: 'mat_resin_safety',
+      title: 'Formlabs SLA Resin Handling & Solvent Chemical Safety SOP',
+      type: 'safety-guideline',
+      labId: 'lab_mech_proto',
+      resourceId: 'res_formlabs_3d_01',
+      topic: 'Chemical & Environmental Safety',
+      description: 'Mandatory environmental protocol for handling photopolymer resin cartridges, IPA solvent bath filtration, and hazardous UV waste disposal.',
+      source: 'Campus Environmental Health & Safety Division (EHS-SLA-04)',
+      verified: true,
+      isDemo: true
+    },
+    {
+      id: 'mat_cuda_distributed',
+      title: 'CUDA Multi-GPU Distributed Training & Mixed-Precision Best Practices',
+      type: 'video-reference',
+      labId: 'lab_cse_ml',
+      resourceId: 'res_rtx4090_rig_01',
+      topic: 'Deep Learning & Compute Optimization',
+      description: 'Recorded laboratory seminar on PyTorch Distributed Data Parallel (DDP), gradient checkpointing, and thermal throttling mitigations.',
+      source: 'Dr. Aris Thorne — CSE High Performance AI Seminar',
+      verified: true,
+      isDemo: true
+    },
+    {
+      id: 'mat_fpga_timing',
+      title: 'Xilinx Vivado Static Timing Analysis & CDC Verification Checklist',
+      type: 'sop-checklist',
+      labId: 'lab_ece_digital',
+      resourceId: 'res_zynq_fpga_01',
+      topic: 'Embedded Systems & Reconfigurable Logic',
+      description: 'Checklist for clock domain crossing constraints, multi-cycle path exceptions, and hardware bitstream verification in loop.',
+      source: 'Digital Systems Lab Guidelines / Maxwell Complex',
+      verified: true,
+      isDemo: true
+    }
+  ];
+
   const resources: Resource[] = [
     {
       id: 'res_jetson_orin_01',
       name: 'NVIDIA Jetson AGX Orin 64GB Dev Kit',
       departmentId: 'dept_mech',
+      labId: 'lab_mech_auto',
       category: 'compute',
       capabilityTags: ['edge-ai', 'gpu-compute', 'cuda-training', 'iot-prototyping'],
       equivalenceGroupId: 'group_edge_ai',
@@ -68,6 +201,7 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
       id: 'res_rtx4090_rig_01',
       name: 'NVIDIA RTX 4090 Deep Learning Rig',
       departmentId: 'dept_cse',
+      labId: 'lab_cse_ml',
       category: 'compute',
       capabilityTags: ['gpu-compute', 'cuda-training', 'llm-inference'],
       equivalenceGroupId: 'group_gpu_cluster',
@@ -84,6 +218,7 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
       id: 'res_keysight_la_01',
       name: 'Keysight 16-Channel 500MHz Logic Analyzer',
       departmentId: 'dept_ece',
+      labId: 'lab_ece_digital',
       category: 'instrumentation',
       capabilityTags: ['logic-analyzer', 'signal-measurement', 'fpga-synthesis'],
       equivalenceGroupId: 'group_timing_analyzer',
@@ -100,6 +235,7 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
       id: 'res_tektronix_scope_01',
       name: 'Tektronix 4-Channel 1GHz Digital Oscilloscope',
       departmentId: 'dept_ece',
+      labId: 'lab_ece_rf',
       category: 'instrumentation',
       capabilityTags: ['oscilloscope-high-speed', 'signal-measurement', 'power-analysis'],
       location: 'Maxwell Complex - RF & Microwave Lab 202',
@@ -115,6 +251,7 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
       id: 'res_zynq_fpga_01',
       name: 'Xilinx Zynq UltraScale+ MPSoC Dev Board',
       departmentId: 'dept_ece',
+      labId: 'lab_ece_digital',
       category: 'embedded',
       capabilityTags: ['fpga-synthesis', 'microcontroller-arm', 'edge-ai'],
       location: 'Maxwell Complex - Embedded Systems Lab 206',
@@ -130,6 +267,7 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
       id: 'res_formlabs_3d_01',
       name: 'Formlabs Form 4 SLA 3D Resin Printer',
       departmentId: 'dept_mech',
+      labId: 'lab_mech_proto',
       category: 'fabrication',
       capabilityTags: ['3d-printing-sla', 'laser-cutting'],
       location: 'Tesla Workshops - Prototyping Bay 105',
@@ -145,6 +283,7 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
       id: 'res_haas_cnc_01',
       name: 'Haas Mini Mill 3-Axis CNC Machining Center',
       departmentId: 'dept_mech',
+      labId: 'lab_mech_proto',
       category: 'fabrication',
       capabilityTags: ['cnc-milling'],
       location: 'Tesla Workshops - Heavy Machine Bay 101',
@@ -160,6 +299,7 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
       id: 'res_rs_spectrum_01',
       name: 'Rohde & Schwarz 3GHz Spectrum Analyzer',
       departmentId: 'dept_ece',
+      labId: 'lab_ece_rf',
       category: 'instrumentation',
       capabilityTags: ['spectrum-analysis', 'rf-microwave', 'sdr-software-radio'],
       location: 'Maxwell Complex - RF & Microwave Lab 202',
@@ -175,6 +315,7 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
       id: 'res_flir_thermal_01',
       name: 'FLIR T540 High-Speed Thermal Imaging Camera',
       departmentId: 'dept_mech',
+      labId: 'lab_mech_auto',
       category: 'instrumentation',
       capabilityTags: ['thermal-imaging', 'battery-cycling-test'],
       location: 'Tesla Workshops - Thermal Dynamics Lab 108',
@@ -355,9 +496,11 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
     currentUser: students[0], // Default: Alex Rivera (Student)
     users: [...students, facultyUser],
     departments,
+    labs,
     resources,
     requests,
     bookings,
+    materials,
     lastResetAt: new Date().toISOString()
   };
 }

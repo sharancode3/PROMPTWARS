@@ -10,6 +10,8 @@
 
 Before running any stage, paste [00_MASTER_AGENT_CONTEXT.md](00_MASTER_AGENT_CONTEXT.md) into the coding agent. Then paste only the active stage prompt below. Repeat the master context at each new stage so the agent retains the product, documentation, UI/UX, evaluation, and execution rules.
 
+For the current live-screen redesign, paste [UI_UX_REFINEMENT_PROMPT.md](UI_UX_REFINEMENT_PROMPT.md) by itself as the single task prompt. It directs the agent to read `AGENTS.md` and the project docs, updates Stage 3's layout to the requested desktop sidebar, and adds lab-learning/settings/insights while preserving existing API and scheduler boundaries.
+
 | Stage | Prompt file | Combines | Gate before proceeding |
 | --- | --- | --- | --- |
 | 1. Foundation and contract | [01_FOUNDATION_AND_CONTRACT.md](01_FOUNDATION_AND_CONTRACT.md) | Existing-repo audit, source-of-truth cleanup, scope lock, shared schemas, API contract, demo scenario | Existing monorepo builds; contract and assumptions are frozen; no unresolved requirement conflicts |

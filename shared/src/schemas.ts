@@ -6,7 +6,8 @@ import {
   BOOKING_STATUSES,
   REQUEST_STATUSES,
   PROJECT_TYPES,
-  ALLOCATION_STRATEGIES
+  ALLOCATION_STRATEGIES,
+  MATERIAL_TYPES
 } from './constants.js';
 
 export const RoleSchema = z.enum(ROLES);
@@ -16,6 +17,7 @@ export const BookingStatusSchema = z.enum(BOOKING_STATUSES);
 export const RequestStatusSchema = z.enum(REQUEST_STATUSES);
 export const ProjectTypeSchema = z.enum(PROJECT_TYPES);
 export const AllocationStrategySchema = z.enum(ALLOCATION_STRATEGIES);
+export const MaterialTypeSchema = z.enum(MATERIAL_TYPES);
 
 export const DepartmentSchema = z.object({
   id: z.string(),
@@ -34,7 +36,23 @@ export const LabSchema = z.object({
     open: z.string().regex(/^\d{2}:\d{2}$/),
     close: z.string().regex(/^\d{2}:\d{2}$/)
   }),
-  coordinatorName: z.string()
+  coordinatorName: z.string(),
+  description: z.string().optional(),
+  safetyRules: z.array(z.string()).default([])
+});
+
+export const LearningMaterialSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  type: MaterialTypeSchema,
+  labId: z.string(),
+  resourceId: z.string().optional(),
+  topic: z.string(),
+  description: z.string(),
+  source: z.string(),
+  url: z.string().optional(),
+  verified: z.boolean().default(true),
+  isDemo: z.boolean().default(true)
 });
 
 export const CertificationSchema = z.object({
@@ -61,6 +79,7 @@ export const ResourceSchema = z.object({
   id: z.string(),
   name: z.string(),
   departmentId: z.string(),
+  labId: z.string().optional(),
   category: ResourceCategorySchema,
   capabilityTags: z.array(CapabilityTagSchema),
   equivalenceGroupId: z.string().optional(),
@@ -198,8 +217,10 @@ export const DemoScenarioSchema = z.object({
   currentUser: UserSchema,
   users: z.array(UserSchema).default([]),
   departments: z.array(DepartmentSchema),
+  labs: z.array(LabSchema).default([]),
   resources: z.array(ResourceSchema),
   requests: z.array(AccessRequestSchema),
   bookings: z.array(BookingSchema),
+  materials: z.array(LearningMaterialSchema).default([]),
   lastResetAt: z.string().datetime()
 });

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ScenarioProvider } from './context/ScenarioContext.js';
+import { Sidebar } from './components/common/Sidebar.js';
 import { Header } from './components/common/Header.js';
 import { Footer } from './components/common/Footer.js';
 import { LiveRegion } from './components/common/LiveRegion.js';
@@ -9,9 +10,15 @@ import { DiscoverPage } from './pages/DiscoverPage.js';
 import { RequestPage } from './pages/RequestPage.js';
 import { ConflictCenterPage } from './pages/ConflictCenterPage.js';
 import { ApprovalsPage } from './pages/ApprovalsPage.js';
+import { LabsPage } from './pages/LabsPage.js';
+import { BookingsPage } from './pages/BookingsPage.js';
+import { KnowledgePage } from './pages/KnowledgePage.js';
+import { InsightsPage } from './pages/InsightsPage.js';
+import { SettingsPage } from './pages/SettingsPage.js';
 
 export default function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleTheme = () => {
     const next = theme === 'light' ? 'dark' : 'light';
@@ -23,20 +30,47 @@ export default function App() {
     <BrowserRouter>
       <ScenarioProvider>
         <div className="min-h-screen bg-paper text-ink transition-colors duration-150 flex flex-col justify-between">
-          <div>
-            <Header theme={theme} toggleTheme={toggleTheme} />
-            <main className="max-w-7xl mx-auto px-4 py-6" id="main-content">
+          {/* Skip Link for Accessibility */}
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:p-3 focus:bg-ink focus:text-paper font-mono text-xs"
+          >
+            Skip to main content
+          </a>
+
+          {/* Persistent Sidebar on Desktop, Drawer on Mobile */}
+          <Sidebar
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+          />
+
+          {/* Main Content Area (offset by sidebar width on large screens) */}
+          <div className="lg:pl-64 flex flex-col flex-1 min-w-0">
+            <Header
+              theme={theme}
+              toggleTheme={toggleTheme}
+              onOpenMobileMenu={() => setIsSidebarOpen(true)}
+            />
+
+            <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6" id="main-content">
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/discover" element={<DiscoverPage />} />
                 <Route path="/request" element={<RequestPage />} />
                 <Route path="/conflicts" element={<ConflictCenterPage />} />
                 <Route path="/approvals" element={<ApprovalsPage />} />
+                <Route path="/labs" element={<LabsPage />} />
+                <Route path="/bookings" element={<BookingsPage />} />
+                <Route path="/knowledge" element={<KnowledgePage />} />
+                <Route path="/insights" element={<InsightsPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
                 <Route path="*" element={<HomePage />} />
               </Routes>
             </main>
+
+            <Footer />
           </div>
-          <Footer />
+
           <LiveRegion />
         </div>
       </ScenarioProvider>

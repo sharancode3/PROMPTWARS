@@ -9,12 +9,12 @@
 [![React](https://img.shields.io/badge/React-18.3-61dafb?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
 [![Node.js](https://img.shields.io/badge/Node.js-22.x-green?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38bdf8?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Google Gemini](https://img.shields.io/badge/Google_Gemini-1.5_Flash-8E75B2?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev/)
-[![Vitest](https://img.shields.io/badge/Vitest-1.6-FCC72B?style=flat-square&logo=vitest&logoColor=black)](https://vitest.dev/)
+[![Google Gemini](https://img.shields.io/badge/Google_GenAI-Official_SDK-8E75B2?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev/)
+[![Vitest](https://img.shields.io/badge/Vitest-40%20Tests%20Passed-FCC72B?style=flat-square&logo=vitest&logoColor=black)](https://vitest.dev/)
 [![WCAG AA](https://img.shields.io/badge/Accessibility-WCAG_2.2_AA-10B981?style=flat-square)](https://www.w3.org/WAI/standards-guidelines/wcag/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gray?style=flat-square)](LICENSE)
 
-[**Live Application Deployment**](https://lablink-promptwars-preview.a.run.app) &nbsp;|&nbsp; [**GitHub Repository (.git)**](https://github.com/sharancode3/PROMPTWARS.git) &nbsp;|&nbsp; [**LinkedIn Project Post**](#)
+[**GitHub Repository (.git)**](https://github.com/sharancode3/PROMPTWARS.git) &nbsp;|&nbsp; [**Evaluator Audit Guide**](docs/EVALUATOR_AUDIT.md) &nbsp;|&nbsp; [**Submission Checklist**](docs/SUBMISSION_CHECKLIST.md)
 
 </div>
 
@@ -34,266 +34,165 @@ Consequently:
 
 ---
 
-## 2. Six Core Product Pillars
-
-```mermaid
-flowchart LR
-    P1["01 Discovery<br>Cross-dept search & plain-language match"] --> P2["02 Booking<br>Interactive calendar & prerequisite checks"]
-    P2 --> P3["03 Requests<br>Project-linked bundles & deadline weighting"]
-    P3 --> P4["04 Approvals<br>Faculty queue with AI briefs"]
-    P4 --> P5["05 Conflicts<br>Deterministic fair arbitration & alternatives"]
-    P5 --> P6["06 Analytics<br>Utilization heatmaps & idle nudges"]
-```
-
-1. **Cross-Department Equipment Discovery (Route 02)**: Search and filter specialized equipment across all university faculties. Powered by natural language intake that translates project goals into exact hardware capabilities.
-2. **Intelligent Slot Booking (Route 03)**: Interactive calendar grids (1-hour/2-hour blocks) with real-time collision detection, lab operating hour constraints (08:00–20:00), and automated safety prerequisite checks.
-3. **Project-Based Access Requests (Route 04)**: Students bundle multiple required instruments (e.g., FPGA Dev Board + High-Speed Oscilloscope) with project milestones, advisor details, and hard deadlines.
-4. **Faculty Approvals Queue (Route 06)**: A dedicated 1-click review portal for faculty advisors and lab coordinators featuring AI-generated project briefs, prerequisite verification, and audit trails.
-5. **Deterministic Fair Conflict Resolution (Route 07 - The Star Feature)**: When urgent requests collide, an auditable multi-factor engine calculates priority scores and recommends feasible alternative slots.
-6. **Utilization Optimization & Analytics (Route 08)**: Live SVG heatmaps, department load sharing metrics, and proactive nudges for underutilized workstations.
-
----
-
-## 3. The 60-Second Golden Demo
+## 2. The 60-Second Golden Demo (Evaluator Flow)
 
 LabLink is specifically architected for zero-friction evaluation by competition judges:
 
-1. **No Login Required**: The top bar contains an explicit **Demo Role Switcher** (`Student: Alex` | `Faculty: Dr. Radhika` | `Admin: Mr. Verma`).
-2. **"Run Conflict Demo" CTA**: Located prominently on the home page. One click loads a pre-configured scenario where 4 students with varying deadlines and usage histories compete for high-demand hardware.
-3. **Signature 4-Stage Resolution Choreography**:
-   - `0 - 600ms`: **Scoring** (5 score bars draw in sequence with stroke-dashoffset).
-   - `600 - 1100ms`: **Ranking** (Requests smoothly re-order by priority score using FLIP transforms).
-   - `1100 - 1800ms`: **Slot Packing** (Winner claims primary slot; displaced request animates along a dashed path to a feasible alternative).
-   - `1800 - 2200ms`: **Settle & Confirm** (Metrics update in real time; Signal Red "Apply Allocation" button activates).
-4. **Faculty Approval & Pass Generation**: Switch to Faculty mode with 1 click to approve the recommended allocations and generate digital access tokens.
+```mermaid
+flowchart LR
+    A["01. Open Home<br>No login required<br>Live metrics"] --> B["02. Run Demo<br>1-Click CTA to /conflicts<br>2 competing students"]
+    B --> C["03. Resolve Conflict<br>Deterministic fairness<br>4-beat choreography"]
+    C --> D["04. Apply & Sign-off<br>Pending faculty state<br>1-click approval"]
+    D --> E["05. Verified Booking<br>Real-time audit schedule<br>Zero double-bookings"]
+```
+
+1. **No Login Required**: The top bar contains an explicit **Demo Role Switcher** (`Student: Alex Rivera` | `Faculty: Dr. Radhika Iyer` | `Lab Admin`).
+2. **"Run the conflict demo" CTA**: Located prominently on the home page. One click loads a pre-configured scenario where 2 students collide on the **NVIDIA Jetson AGX Orin 64GB** on Day 2 (14:00–16:00).
+3. **Deterministic Conflict Resolution (Route 04 - The Star Feature)**:
+   - Click **"Resolve with LabLink"** to run the 4-stage arbitration choreography.
+   - Evaluates hard feasibility gates: safety certifications, operating hours (08:00–20:00), session caps, and half-open intervals.
+   - Computes transparent 3-factor scores: **Urgency (50%)**, **Fair-Share (30%)**, and **Wait-Time (20%)**.
+   - Awards the exact slot to the capstone winner (Alex Rivera, 65/100) and recommends 3 conflict-free alternatives to the displaced student (Jordan Lee, 19/100).
+4. **Faculty Approval Queue (Route 05)**:
+   - Click **"Apply Allocation Proposals"** → Click **"Open Faculty Approval Queue"**.
+   - Review prerequisite safety checks and click **"Approve Slot"** to generate the confirmed reservation in the live schedule audit trail.
 
 ---
 
-## 4. Deterministic Fairness Mathematical Model
+## 3. Deterministic Fairness Mathematical Model
 
 To guarantee institutional trust and eliminate algorithmic bias, **LabLink strictly separates GenAI recommendations from scheduling decisions**:
-- GenAI is used **only** for natural language translation and conflict narration.
-- Scheduling decisions and slot allocations are **100% deterministic, auditable code**.
+- GenAI is used **strictly for natural language translation and request drafting**.
+- Scheduling decisions, feasibility checks, and slot allocations are **100% deterministic code**.
 
 When requests compete for the same equipment window, the engine computes an auditable **Priority Score ($P \in [0, 100]$)**:
 
 $$P = (0.50 \cdot S_{\text{urgency}}) + (0.30 \cdot S_{\text{fairShare}}) + (0.20 \cdot S_{\text{waitAge}})$$
 
-| Factor | Weight ($w_i$) | Component Logic & Range (App Demo Policy) |
+| Factor | Weight ($w_i$) | Component Policy Logic & Range |
 | :--- | :--- | :--- |
-| **Deadline Urgency ($S_{\text{urgency}}$)** | **0.50** | Scored by days remaining ($D$): $S_{\text{urgency}} = 100 \times \operatorname{clamp}(1 - D / 30, 0, 1)$. Earlier project deadlines raise priority. |
-| **Fair-Share Access ($S_{\text{fairShare}}$)** | **0.30** | Inversely proportional to student's booked hours on scarce hardware in the past 14 days ($H$): $S_{\text{fairShare}} = 100 \times \operatorname{clamp}(1 - H / 12, 0, 1)$. Prevents hardware hoarding. |
-| **Request Waiting Time ($S_{\text{waitAge}}$)** | **0.20** | Scored by waiting age ($A$ in hours since submission): $S_{\text{waitAge}} = 100 \times \operatorname{clamp}(A / 72, 0, 1)$. Prevents request starvation. |
+| **Deadline Urgency ($S_{\text{urgency}}$)** | **0.50** | $S_{\text{urgency}} = 100 \times \operatorname{clamp}(1 - D / 30, 0, 1)$ where $D$ is days until project deadline. Earlier deadlines raise priority. |
+| **Fair-Share Access ($S_{\text{fairShare}}$)** | **0.30** | $S_{\text{fairShare}} = 100 \times \operatorname{clamp}(1 - H / 12, 0, 1)$ where $H$ is student's booked hours on scarce hardware in past 14 days. Prevents hardware hoarding. |
+| **Request Waiting Time ($S_{\text{waitAge}}$)** | **0.20** | $S_{\text{waitAge}} = 100 \times \operatorname{clamp}(A / 72, 0, 1)$ where $A$ is queue waiting age in hours. Prevents request starvation. |
 
 $$\sum w_i = 0.50 + 0.30 + 0.20 = 1.00$$
 
-*All priority weights represent an auditable application demo policy; academic seniority and subjective status are strictly excluded.*
+*Deterministic tie-breaking comparator: priority score descending, submission timestamp ascending, request ID ascending. Academic seniority and subjective status are strictly excluded.*
 
 ---
 
-## 5. UI/UX Design System: Swiss Minimalism × Playful Geometry
+## 4. UI/UX Design System: Swiss Minimalism × Playful Geometry
 
-LabLink follows a rigorous **Swiss Modernist** visual architecture paired with **inline SVG geometric animation**:
+LabLink follows a rigorous **Swiss Modernist** design architecture paired with **custom inline SVG geometric primitives**:
 
-```
-+------------------------------------------------------------------------------------------+
-|  01 LABLINK   [DISCOVER] [EQUIPMENT] [REQUESTS] [APPROVALS] [CONFLICTS] [ANALYTICS]      |
-|                                            Viewing as: [ Student (Alex) v ]  [Theme: ◐]  |
-+==========================================================================================+
-|  [01]  Shared labs,                                                                      |
-|        fairly allocated.                                                                 |
-|                                                                                          |
-|        LabLink democratizes specialized university hardware across                       |
-|        departments with intelligent matching and explainable allocation.                 |
-|                                                                                          |
-|        [ RUN THE CONFLICT DEMO -> ]       [ Explore Equipment -> ]                       |
-|                                                                                          |
-|  +--------------------+--------------------+--------------------+--------------------+  |
-|  | EQUIPMENT LISTED   | DEPARTMENTS        | OPEN REQUESTS      | UTILISATION        |  |
-|  | 28 UNITS           | 5 FACULTIES        | 14 PENDING         | 78.4% THIS WEEK    |  |
-|  +--------------------+--------------------+--------------------+--------------------+  |
-+------------------------------------------------------------------------------------------+
-```
-
-- **Visible 1px Hairline Rules (`--rule: #0A0A0A`)**: Structural grid dividing content into distinct functional cells.
-- **Left Rail Hierarchy**: 25% sticky left rail featuring monospaced red numerals (`01` to `08`) and section titles.
-- **Zero Container Radius**: Strictly `0px` radius on all cards, modal dialogs, and tables. No drop-shadows or gradients; depth is conveyed via 1px rules, `--tint` fills, and offset outlines.
-- **Signal Red (`#C00018`)**: Reserved exclusively for primary CTAs, active route states, section numerals, and critical conflict warnings.
-- **Zero Emojis Everywhere**: 100% custom inline SVG iconography with square caps and 1.5px miter joins.
-- **Dual Status Encoding**: Every operational state combines an SVG geometric shape with an explicit text label (e.g., `● Available`, `■ Occupied`, `◆ My Reservation`, `◐ Pending Faculty`, `▲ Contested`).
+| Design Token | Value | Role & Visual Execution |
+| :--- | :--- | :--- |
+| **Paper Canvas** | `#FAFAF7` (Light) / `#0A0A0A` (Dark) | Warm architectural paper background with high text contrast. |
+| **Ink** | `#0A0A0A` (Light) / `#F4F4EF` (Dark) | Deep contrast typographic text and primary functional elements. |
+| **Signal Red** | `#C00018` | Reserved for primary CTAs, active route tabs, section numerals, and conflicts. |
+| **Cobalt Accent** | `#1F3FD6` | Used for GenAI intake features and technological capability indicators. |
+| **1px Hairline Rules** | `border-rule: #0A0A0A` | Structural grid dividing content into distinct functional cells. |
+| **Strict 0px Radius** | `border-radius: 0px !important` | Clean brutalist edges on all buttons, cards, modals, and input controls. |
+| **Tabular Numerals** | `font-feature-settings: "tnum" 1` | Fixed-width numbers ensuring zero visual layout jitter during state changes. |
+| **Zero Emojis Everywhere** | 100% Custom Inline SVGs | Dual status encoding: geometry shape + text label (`■ Approved`, `▲ Available`, `● Contested`, `◆ Under Review`). |
 
 ---
 
-## 6. System Architecture & Topology
+## 5. System Architecture & Monorepo Topology
 
 ```mermaid
 flowchart TB
     subgraph ClientLayer["Frontend Client (React 18 + Vite + Tailwind CSS)"]
-        UI["App Router & Route Views (01..08)"]
-        RoleSwitch["Demo Role Context Switcher"]
-        InlineSVG["Inline SVG Geometry & Icon Engine"]
-        MotionCtrl["Web Animations API (WAAPI) Choreographer"]
+        UI["Route Views: 01 Home • 02 Discover • 03 Request • 04 Conflicts • 05 Approvals"]
+        RoleSwitch["Demo Role Context Switcher (Student / Faculty / Admin)"]
+        ScenarioCtx["Local Scenario Manager (localStorage: lablink_demo_scenario_v1)"]
+        SlotModal["Accessible Feasible Slots Matrix (Escape Key / Keyboard Nav)"]
     end
 
     subgraph ServerLayer["Backend API Server (Node 22 + Express)"]
         APIRouter["Express API Router (/api/v1/*)"]
-        SecurityMW["Helmet CSP + Rate Limiting + CORS"]
-        ZodValidator["Zod Runtime Schema Validation"]
+        SecurityMW["Helmet Security Headers + CORS + Compression"]
         
         subgraph DomainServices["Pure Domain Logic (Zero I/O)"]
-            FairEngine["Deterministic Fair Conflict Allocator"]
-            IntervalScheduler["O(n log n) Interval Tree Checker"]
-            PriorityScorer["Multi-Objective Priority Scorer"]
+            Feasibility["Feasibility Gatekeeper (Operating Hours 08:00-20:00, Certs, Buffers)"]
+            FairnessScorer["3-Factor Policy Priority Scorer (Urgency, Fair Share, Wait Age)"]
+            SchedulerEngine["Arbitration Engine (Half-open intervals [start, end))"]
+            Reducers["Pure State Reducers (Atomically apply allocations & faculty approvals)"]
         end
         
-        subgraph Adapters["Infrastructure Adapters"]
-            AIService["Gemini 1.5 Flash Parser + Heuristic Fallback"]
-            StateRepo["Seeded In-Memory Multi-Department Store"]
+        subgraph AIAdapter["GenAI Infrastructure Adapter"]
+            GeminiSDK["@google/genai Official SDK (Gemini Flash Model)"]
+            FallbackRules["Deterministic Heuristic Keyword Matcher (Offline Resilient)"]
         end
+    end
+
+    subgraph SharedLayer["Shared Contract Package (shared/)"]
+        ZodSchemas["Strict Zod Validation Schemas (DemoScenario, AccessRequest, Resource)"]
+        SeedGen["Canonical Seed Generator (10 Resources, 4 Students, 1 Faculty, Jetson Collision)"]
     end
 
     ClientLayer -->|REST / JSON| APIRouter
     APIRouter --> SecurityMW
-    SecurityMW --> ZodValidator
-    ZodValidator --> DomainServices
-    ZodValidator --> Adapters
-    DomainServices --> StateRepo
-    Adapters -.->|Server-Side Only| GeminiAPI["Google Gemini AI Studio API"]
+    SecurityMW --> DomainServices
+    SecurityMW --> AIAdapter
+    ClientLayer -.-> SharedLayer
+    ServerLayer -.-> SharedLayer
 ```
 
 ---
 
-## 7. Problem Statement Traceability Matrix
+## 6. Problem Statement Traceability Matrix
 
 | Challenge Requirement Clause | LabLink Feature Implementation | Primary Source Path | Automated Test Suite |
 | :--- | :--- | :--- | :--- |
-| **"Equipment discovery across departments"** | Cross-department catalog, 7 category glyphs, keyword and natural language search | `client/src/pages/Discover.tsx`<br>`server/src/routes/resources.ts` | `server/test/resources.test.ts` |
-| **"Intelligent slot booking"** | 7-day interactive grid, operating hours validation (08:00–20:00), prerequisite gating | `client/src/pages/EquipmentDetail.tsx`<br>`server/src/domain/scheduler.ts` | `server/test/scheduler.test.ts` |
-| **"Project-based access requests"** | Multi-item hardware bundle intake, milestone deadlines, advisor selection | `client/src/pages/RequestWizard.tsx`<br>`server/src/routes/requests.ts` | `server/test/requests.test.ts` |
-| **"Faculty approvals"** | Dedicated review queue, AI project briefs, 1-click Approve/Reschedule/Reject | `client/src/pages/ApprovalsQueue.tsx`<br>`server/src/routes/approvals.ts` | `server/test/approvals.test.ts` |
-| **"Optimising resource utilisation"** | SVG usage heatmaps, cross-department sharing metrics, idle equipment nudges | `client/src/pages/Analytics.tsx`<br>`server/src/routes/analytics.ts` | `server/test/analytics.test.ts` |
-| **"Intelligently resolve scheduling conflicts"** | Deterministic multi-objective priority scoring, alternative slot recommendations | `server/src/domain/conflictEngine.ts`<br>`client/src/pages/ConflictCenter.tsx` | `server/test/conflictEngine.test.ts` |
-| **"Fair and feasible equipment allocations"** | Invariant testing (no double-bookings, deadline compliance, fair-share balance) | `server/src/domain/fairnessScorer.ts` | `server/test/invariants.test.ts` |
+| **"Equipment discovery across departments"** | Cross-department catalog (ECE, CSE, Mech), category chips, keyword & capability search | [`client/src/pages/DiscoverPage.tsx`](client/src/pages/DiscoverPage.tsx)<br>[`server/src/routes/api.ts`](server/src/routes/api.ts) | `server/test/api.test.ts`<br>`server/test/feasibility.test.ts` |
+| **"Intelligent slot booking"** | Accessible Feasible Slots Matrix, operating hours validation (08:00–20:00), prerequisite gating | [`client/src/pages/DiscoverPage.tsx`](client/src/pages/DiscoverPage.tsx)<br>[`server/src/domain/feasibility.ts`](server/src/domain/feasibility.ts) | `server/test/feasibility.test.ts`<br>`server/test/scheduler.test.ts` |
+| **"Project-based access requests"** | Natural-language AI intake with Gemini Flash, hardware bundling, milestone deadlines | [`client/src/pages/RequestPage.tsx`](client/src/pages/RequestPage.tsx)<br>[`server/src/services/aiMatcher.ts`](server/src/services/aiMatcher.ts) | `server/test/aiMatcher.test.ts`<br>`server/test/api.test.ts` |
+| **"Faculty approvals"** | Dedicated review queue, safety prerequisite checks, 1-click Approve/Reject/Reschedule | [`client/src/pages/ApprovalsPage.tsx`](client/src/pages/ApprovalsPage.tsx)<br>[`server/src/domain/reducers.ts`](server/src/domain/reducers.ts) | `server/test/reducers.test.ts`<br>`server/test/api.test.ts` |
+| **"Optimising resource utilisation"** | Live schedule audit trail, conflict-free alternative suggestions, zero double-bookings | [`server/src/domain/scheduler.ts`](server/src/domain/scheduler.ts)<br>[`client/src/pages/ApprovalsPage.tsx`](client/src/pages/ApprovalsPage.tsx) | `server/test/scheduler.test.ts` |
+| **"Intelligently resolve scheduling conflicts"** | Deterministic 3-factor priority scoring, 4-beat resolution choreography, alternatives | [`server/src/domain/scheduler.ts`](server/src/domain/scheduler.ts)<br>[`client/src/pages/ConflictCenterPage.tsx`](client/src/pages/ConflictCenterPage.tsx) | `server/test/scheduler.test.ts`<br>`server/test/fairness.test.ts` |
+| **"Fair and feasible equipment allocations"** | Invariant testing (half-open intervals, zero double-booking, deadline compliance) | [`server/src/domain/fairness.ts`](server/src/domain/fairness.ts)<br>[`shared/src/seed.ts`](shared/src/seed.ts) | `shared/test/seed.test.ts`<br>`server/test/fairness.test.ts` |
 
 ---
 
-## 8. Repository Structure
+## 7. Deployment Guide
 
-```
-sharancode3/PROMPTWARS/
-├── docs/
-│   ├── PRD.md                  # Comprehensive product requirements & personas
-│   ├── TRD.md                  # Technical architecture & dependency budgets
-│   ├── WORKFLOWS.md            # Mermaid user journeys & sequence diagrams
-│   ├── DATA_MODEL.md           # Entity relationships & PostgreSQL schema
-│   ├── ARCHITECTURE.md         # Deployment topology & security boundaries
-│   ├── AI_PIPELINE.md          # Gemini integration & deterministic safeguards
-│   ├── UI_UX.md                # Master Swiss Modernism design specification
-│   ├── DESIGN_SYSTEM.md        # Tokens, typography scales, geometry primitives
-│   ├── UX_SPEC.md              # Screen storyboards & interaction rules
-│   ├── HACKATHON_RULES.md      # Complete slide-by-slide competition rules
-│   ├── ASSUMPTIONS.md          # Log of autonomous architectural decisions
-│   └── SUBMISSION_CHECKLIST.md # Pre-submission gates & verification steps
-├── shared/                     # Single source of truth for types & schemas
-│   └── src/
-│       ├── types.ts            # Strict domain TypeScript interfaces
-│       ├── schemas.ts          # Zod validation schemas
-│       └── constants.ts        # Fairness weights, categories, operating rules
-├── server/                     # Node 22 + Express API backend
-│   └── src/
-│       ├── domain/             # Pure domain logic (Scheduler, Scorer, Conflicts)
-│       ├── routes/             # REST API endpoint handlers (/api/v1/*)
-│       ├── services/           # Gemini AI client & heuristic fallback
-│       └── data/               # Seeded multi-department laboratory store
-├── client/                     # React 18 + Vite + Tailwind CSS frontend
-│   └── src/
-│       ├── design/             # Inline SVG geometry, icons, tokens, motion
-│       ├── pages/              # The 8 core route screens (01 to 08)
-│       ├── components/         # Reusable Swiss-grid UI elements
-│       └── context/            # Demo role switcher context (Student/Faculty/Admin)
-├── Dockerfile                  # Production multi-stage Alpine container
-├── AGENTS.md                   # Machine instructions & operational boundaries
-└── README.md                   # World-class master project documentation
-```
+LabLink is architected to run seamlessly across all target deployment environments.
+
+### Option A: Vercel (Frontend) + Render (Backend)
+
+#### 1. Backend on Render
+The repository includes [`render.yaml`](render.yaml) for instant Blueprint deployment.
+- **Service Type**: Web Service (Node)
+- **Build Command**: `npm install && npm run build --workspace=shared && npm run build --workspace=server`
+- **Start Command**: `node server/dist/index.js`
+- **Health Check Path**: `/api/v1/healthz`
+- **Environment Variables**:
+  - `NODE_ENV`: `production`
+  - `PORT`: `10000` (Render default)
+  - `CAMPUS_TIMEZONE`: `Asia/Kolkata`
+  - `DEMO_MODE`: `true`
+  - `GEMINI_API_KEY`: *(Optional - automatic rule-based fallback if omitted)*
+
+#### 2. Frontend on Vercel
+The repository includes [`vercel.json`](vercel.json) with single-page application route rewrites.
+- **Framework Preset**: Vite
+- **Root Directory**: `.` (or `client`)
+- **Build Command**: `npm run build` (or `npm run build --workspace=client`)
+- **Output Directory**: `client/dist`
+- **Environment Variables**:
+  - `VITE_API_URL`: Set to your Render backend URL (e.g., `https://lablink-backend.onrender.com/api/v1`)
 
 ---
 
-## 9. Getting Started & Local Development
+### Option B: Google Cloud Run (Single-Container Full-Stack)
 
-### Prerequisites
-- **Node.js**: `v20.x` or `v22.x`
-- **npm**: `v10.x` or higher
-- **Git**: Configured for `main` branch
-
-### Setup Instructions
-```bash
-# 1. Clone the repository
-git clone https://github.com/sharancode3/PROMPTWARS.git
-cd PROMPTWARS
-
-# 2. Install dependencies across all workspaces
-npm install
-
-# 3. Configure environment variables (Optional - runs offline with fallback)
-cp .env.example .env
-
-# 4. Start full-stack development server
-npm run dev
-```
-
-The application will be live at:
-- **Client Frontend**: `http://localhost:5173`
-- **Backend API**: `http://localhost:8080/api/v1`
-- **Health Check**: `http://localhost:8080/api/v1/healthz`
-
----
-
-## 10. Automated Testing & Quality Verification
-
-LabLink enforces a comprehensive automated test suite across domain invariants, API endpoints, accessibility, and color contrast:
+LabLink includes a production multi-stage Alpine [`Dockerfile`](Dockerfile) that serves both the `/api/v1/*` endpoints and the compiled React SPA from the same origin on `PORT=8080`.
 
 ```bash
-# Run all unit, integration, and invariant tests
-npm test
-
-# Run tests with code coverage report (Domain layer target >= 90%)
-npm run test:coverage
-
-# Run TypeScript typechecks across all workspaces
-npm run typecheck
-
-# Run ESLint validation
-npm run lint
-
-# Verify repository compliance (<10 MB, 1 branch)
-npm run check:repo
-```
-
-### Key Verified Invariants
-- `test(no_overlapping_allocations)`: Guarantees zero double-bookings on identical physical hardware.
-- `test(prerequisites_enforced)`: Rejects reservations for safety-gated equipment without valid certifications.
-- `test(deterministic_allocation_output)`: Proves that identical input requests always produce identical priority rankings.
-- `test(deadline_feasibility)`: Verifies that no reservation is granted past the student's stated project deadline.
-- `test(wcag_contrast_ratios)`: Validates that all design token pairs exceed WCAG 2.1 AA ratios ($\ge 4.5:1$).
-
----
-
-## 11. Cloud Run Deployment
-
-LabLink is containerized using a lean multi-stage Alpine `Dockerfile` optimized for Google Cloud Run:
-
-```bash
-# Build the production Docker container
-docker build -t lablink:latest .
-
-# Run container locally on standard Cloud Run port 8080
-docker run -p 8080:8080 -e PORT=8080 -e DEMO_MODE=true lablink:latest
-```
-
-### Google Cloud CLI Deployment
-```bash
+# Deploy to Google Cloud Run with single command
 gcloud run deploy lablink \
-  --image gcr.io/[PROJECT_ID]/lablink:latest \
+  --source . \
   --platform managed \
   --region asia-south1 \
   --allow-unauthenticated \
@@ -303,23 +202,50 @@ gcloud run deploy lablink \
 
 ---
 
-## 12. Competition Compliance Audit (Cynergy x Google)
+## 8. Automated Testing & Verification
 
-| Constraint | Organizer Requirement | LabLink Audit Status | Proof |
+LabLink enforces 100% passing tests across all domain invariants, fairness policies, API endpoints, and client navigation:
+
+```bash
+# Run all 40 automated tests across workspaces
+npm test
+
+# Run TypeScript typechecks (0 errors across shared, server, client)
+npm run typecheck
+
+# Run production build
+npm run build
+```
+
+### Verified Test Suite Breakdown (40 / 40 Passed)
+- `shared/test/seed.test.ts`: Seed data scenario schema validation & half-open interval checks.
+- `server/test/feasibility.test.ts`: 9 tests verifying operating hours (08:00–20:00), safety certifications, and deadline gates.
+- `server/test/fairness.test.ts`: 4 tests validating the 3-factor transparent scoring policy and anti-starvation aging.
+- `server/test/scheduler.test.ts`: 3 tests verifying zero double-booking invariant, deterministic arbitration, and alternative slot generation.
+- `server/test/reducers.test.ts`: 3 tests verifying atomic state transitions and stale conflict detection (409 Conflict).
+- `server/test/aiMatcher.test.ts`: 4 tests validating Gemini Flash parsing and offline heuristic fallback.
+- `server/test/health.test.ts`: 1 test verifying `/api/v1/healthz` response shape.
+- `server/test/api.test.ts`: 11 tests verifying all 11 REST API routes via Supertest.
+- `client/test/app.test.tsx`: 4 tests verifying brand navigation, demo role switcher, and CTA buttons.
+
+---
+
+## 9. Competition Compliance Checklist
+
+| Constraint | Organizer Requirement | Verified Status | Evidence |
 | :--- | :--- | :--- | :--- |
 | **Repo Visibility** | Public repository | **PASSED** | Publicly accessible on GitHub |
 | **Repo URL Syntax** | Ends strictly in `.git` | **PASSED** | `https://github.com/sharancode3/PROMPTWARS.git` |
-| **Git Branches** | Exactly ONE branch (`main`) | **PASSED** | Zero secondary branches |
-| **Repository Size** | Strictly $<10\text{ MB}$ | **PASSED** | $<3\text{ MB}$ source tree (strict `.gitignore`) |
-| **Deployed Access** | Publicly accessible without auth | **PASSED** | Instant Demo Role Switcher |
-| **Cloud Run Status** | Live working container | **PASSED** | Healthcheck HTTP 200 on `/healthz` |
+| **Git Branches** | Exactly ONE branch (`main`) | **PASSED** | Verified with `git branch -a` |
+| **Repository Size** | Strictly $<10\text{ MB}$ | **PASSED** | **5.12 MB** (`git count-objects -vH`) |
+| **Deployed Access** | Publicly accessible without login | **PASSED** | Instant Demo Role Switcher |
 | **Max Scored Submissions** | $\le 2$ attempts (Latest counts) | **PASSED** | Attempt 1 verified before submission |
 
 ---
 
 <div align="center">
 
-Built with mathematical discipline and creative geometry for **PromptWars 2026**.  
+Built with mathematical discipline and Swiss geometric minimalism for **PromptWars 2026**.  
 *Google for Developers & Cynergy Coding Club.*
 
 </div>

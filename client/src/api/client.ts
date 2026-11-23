@@ -6,7 +6,11 @@ import {
   createSeedScenario
 } from 'shared';
 
-const API_BASE = '/api/v1';
+const API_BASE = import.meta.env.VITE_API_URL
+  ? import.meta.env.VITE_API_URL.replace(/\/$/, '')
+  : (import.meta.env.VITE_API_BASE
+      ? `${import.meta.env.VITE_API_BASE.replace(/\/$/, '')}/api/v1`
+      : '/api/v1');
 
 export interface AIMatchResponse {
   success: boolean;

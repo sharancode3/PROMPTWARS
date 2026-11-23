@@ -18,28 +18,28 @@ flowchart TB
         CloudRunIngress["Google Cloud Run Ingress (HTTPS :443)"]
         
         subgraph "LabLink Container Instance (:8080)"
-            NextServer["Next.js Node.js Server Process (Standalone)"]
+            ExpressServer["Express Node 22 Server Process"]
             
-            subgraph "Presentation Layer"
-                ReactPages["App Router UI (/discovery, /bookings, /faculty, /analytics)"]
-                RoleSwitcher["Demo Role Context Provider"]
+            subgraph "Static Presentation Layer"
+                ViteStatic["Compiled React 18 SPA (client/dist)"]
+                RoleSwitcher["Demo Role Context Provider (Client LocalStorage)"]
             end
             
             subgraph "API / Service Layer"
-                APIRoutes["Next.js Route Handlers (/api/*)"]
+                APIRoutes["Express Route Handlers (/api/v1/*)"]
                 ZodValidator["Zod Input Validation & Sanitization"]
-                AIService["GenAI Project Parser (Gemini 1.5 Flash + Fallback)"]
+                AIService["GenAI Project Parser (Gemini API + Heuristic Fallback)"]
                 FairnessEngine["Deterministic Fair Scheduling Arbitrator"]
-                StateRepository["In-Memory Synchronized Domain Store"]
+                StatelessReducer["Stateless Snapshot Reducers"]
             end
             
-            NextServer --> ReactPages
-            NextServer --> APIRoutes
+            ExpressServer --> ViteStatic
+            ExpressServer --> APIRoutes
             APIRoutes --> ZodValidator
             ZodValidator --> AIService
             ZodValidator --> FairnessEngine
-            ZodValidator --> StateRepository
-            FairnessEngine --> StateRepository
+            ZodValidator --> StatelessReducer
+            FairnessEngine --> StatelessReducer
         end
     end
 
@@ -140,33 +140,35 @@ All API routes run within the Next.js backend layer under `/api/*`. Requests and
 A production multi-stage Alpine Dockerfile is specified for rapid compile and minimal image size:
 
 ```dockerfile
-# Stage 1: Dependencies
-FROM node:20-alpine AS deps
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-
-# Stage 2: Builder
+# Stage 1: Build Shared, Server, and Client
 FROM node:20-alpine AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+COPY package*.json ./
+COPY shared/package*.json ./shared/
+COPY server/package*.json ./server/
+COPY client/package*.json ./client/
+RUN npm ci
+
 COPY . .
-ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
-# Stage 3: Runner
+# Stage 2: Production Runner
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=8080
-ENV HOSTNAME="0.0.0.0"
 
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+COPY package*.json ./
+COPY server/package*.json ./server/
+COPY shared/package*.json ./shared/
+RUN npm ci --omit=dev
+
+COPY --from=builder /app/shared/dist ./shared/dist
+COPY --from=builder /app/server/dist ./server/dist
+COPY --from=builder /app/client/dist ./client/dist
 
 EXPOSE 8080
-CMD ["node", "server.js"]
+CMD ["node", "server/dist/index.js"]
 ```
 
 ### 3.2 Cloud Run Environmental Constraints

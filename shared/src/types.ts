@@ -12,7 +12,8 @@ import {
   BookingSchema,
   ApprovalDecisionSchema,
   NLSearchInterpretRequestSchema,
-  NLSearchInterpretResponseSchema
+  NLSearchInterpretResponseSchema,
+  DemoScenarioSchema
 } from './schemas.js';
 
 export type Department = z.infer<typeof DepartmentSchema>;
@@ -28,6 +29,7 @@ export type Booking = z.infer<typeof BookingSchema>;
 export type ApprovalDecision = z.infer<typeof ApprovalDecisionSchema>;
 export type NLSearchInterpretRequest = z.infer<typeof NLSearchInterpretRequestSchema>;
 export type NLSearchInterpretResponse = z.infer<typeof NLSearchInterpretResponseSchema>;
+export type DemoScenario = z.infer<typeof DemoScenarioSchema>;
 
 export interface ConflictCluster {
   id: string;

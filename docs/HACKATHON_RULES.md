@@ -53,16 +53,16 @@ Participants must submit three distinct links on the Hack2Skill platform:
 ---
 
 ### 2.2 Evaluation Framework & The 6 Scoring Signals (Slides 4, 14)
-An automated AI assessment evaluates every submission across 6 primary criteria:
+An automated AI assessment evaluates every submission across 6 primary criteria. **Note:** The official briefing does not publish numeric weights for these signals; all six are assessed concurrently:
 
 ```mermaid
-pie title AI Evaluation Criteria Signals (Slide 14)
-    "Code Quality (Readable, Organized, Modular)" : 17
-    "Security (Safe Inputs, No Secrets, Sanitized)" : 17
-    "Efficiency (Smart Resource Usage, Lean Deps)" : 17
-    "Testing (Evidence Key Features Work Correctly)" : 17
-    "Accessibility (Usable UI, Keyboard Nav, Contrast)" : 17
-    "Problem Statement Alignment (Solves LabLink Core)" : 15
+flowchart LR
+    CQ["1. Code Quality<br>(Readable, Organized, Modular)"]
+    SEC["2. Security<br>(Safe Inputs, No Secrets, Sanitized)"]
+    EFF["3. Efficiency<br>(Smart Resource Usage, Lean Deps)"]
+    TST["4. Testing<br>(Evidence Key Features Work Correctly)"]
+    ACC["5. Accessibility<br>(Usable UI, Keyboard Nav, Contrast)"]
+    PSA["6. Problem Alignment<br>(Directly Solves LabLink Challenge)"]
 ```
 
 1. **Code Quality**:

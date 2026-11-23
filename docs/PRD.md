@@ -40,7 +40,7 @@ In higher education institutions, specialized laboratory resources (e.g., high-p
 ### 2.3 Assumptions for Confirmation
 1. *Authentication in Demo Mode*: While real deployments use campus OAuth/SSO, evaluator access must be frictionless (no login wall). *Assumption:* Platform will feature an instant "Demo Role Switcher" (Student / Faculty / Lab Admin) allowing immediate evaluation of both student and faculty workflows without registration.
 2. *GenAI Provider*: Google Gemini API (via `@google/genai` or Gemini Flash 1.5) with a robust deterministic mock/rule-based fallback if API keys are not provided in evaluator environments.
-3. *Data Persistence for Cloud Run*: Standalone container with in-memory state pre-seeded with rich multi-department data (or SQLite/LocalStorage for client persistence) ensuring instant cold starts, zero external DB connection fragility, and high platform scores.
+3. *Data Persistence for Cloud Run Demo*: Cloud Run instances are ephemeral and stateless. The synthetic public demo maintains a versioned scenario snapshot in the client browser's `localStorage`. API endpoints operate statelessly over validated snapshot payloads, ensuring instant cold starts, zero remote database connection fragility, and deterministic resets.
 
 ### 2.4 Agent Recommendations
 1. **Hybrid GenAI Architecture**: Use GenAI for semantic search, natural language project-to-equipment extraction, and natural-language conflict mitigation explanations. Keep slot conflict detection and score calculation **100% deterministic and auditable** so AI never invents phantom slots or makes unauthorized decisions.
@@ -75,7 +75,7 @@ In higher education institutions, specialized laboratory resources (e.g., high-p
 - **Project-Based Access Request Form**: Captures project title, faculty guide, deadline date, required tools, and justification.
 - **Deterministic Fair Allocation & Conflict Resolution Engine**:
   - Hard constraint checks: No double bookings, lab operating hours respected, safety prerequisites validated.
-  - Soft fairness scoring: Based on project deadline urgency ($W_1$), academic level ($W_2$), prior usage fair-share quota ($W_3$), and equipment suitability match ($W_4$).
+  - Soft fairness scoring: Based on project deadline urgency ($W_1 = 0.40$), prior access to scarce resources ($W_2 = 0.30$), request waiting time ($W_3 = 0.20$), and requirement fit ($W_4 = 0.10$). Academic seniority and project labels are excluded.
   - Conflict Explainer: When slot is contested, system provides clear human-readable justification and alternative slot recommendations.
 - **Faculty Approval Queue**: Dedicated review dashboard with 1-click Approve, Reject, or Reschedule actions.
 - **Demo Role Switcher**: Instant switcher between Student (Alex), Faculty Approver (Dr. Radhika), and Lab Admin (Mr. Verma).

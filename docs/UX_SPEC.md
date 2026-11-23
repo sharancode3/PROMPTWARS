@@ -1,8 +1,11 @@
 # User Experience (UX) Specification & Screen Storyboards
 ## Project: LabLink — Campus Laboratory Resource-Sharing Platform
-**Status:** COMPLETE (Phase 1)  
+**Status:** STORYBOARD REFERENCE  
 **Target Viewports:** 320px (Mobile S) to 2560px (Ultra-wide)  
 **Standard:** WCAG 2.2 AA Accessible
+
+> [!NOTE]
+> `docs/UX_SPEC.md` serves as a screen flow storyboard. Where visual tokens, styling, or component details in this document conflict with the approved `docs/UI_UX.md` and `docs/DESIGN_SYSTEM.md`, **`docs/UI_UX.md` and `docs/DESIGN_SYSTEM.md` take precedence**. Useful screen-flow and interaction journeys are preserved here.
 
 ---
 

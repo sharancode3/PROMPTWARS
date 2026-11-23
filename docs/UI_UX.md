@@ -159,7 +159,7 @@ sequenceDiagram
     Note over Packer: Winner slides into primary slot.<br>Displaced request slides along dashed path to nearest alternative slot.
     
     Packer->>UI: 1800ms - 2200ms (Stage 4: Settle & Confirm)
-    Note over UI: Shapes snap with snap easing.<br>Before/After metrics update: Utilisation (+18%), Fairness Index (94/100).<br>Signal Red "Apply Allocation" button activates.
+    Note over UI: Shapes snap with snap easing.<br>Before/After metrics update based on live scenario calculations.<br>Signal Red "Apply Allocation" button activates.
 ```
 
 ---

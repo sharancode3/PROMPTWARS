@@ -69,22 +69,34 @@ flowchart LR
 
 ---
 
-## 3. The Deterministic Fair Allocation Engine
+## 3. Feasibility Gating and Deterministic Fair Allocation Engine
 
-When two or more requests compete for the same equipment time slot, the **Fair Allocation Engine** computes an auditable **Priority Score ($P$)**:
+Scheduling in LabLink follows a strict two-stage process: **Hard Feasibility Verification** followed by **Transparent Priority Scoring**.
 
-$$P = (w_d \cdot S_d) + (w_a \cdot S_a) + (w_u \cdot S_u) + (w_m \cdot S_m)$$
+### 3.1 Hard Feasibility Verification (Prerequisite Filter)
+Before any request is scored or ranked, it must satisfy all deterministic feasibility constraints:
+1. **Equipment Compatibility**: Requested resource must support the capability tags required by the project.
+2. **Safety & Training Prerequisite**: `Resource.requiresCertification ⊆ User.certifications`. Ineligible requests are rejected immediately.
+3. **Operational Hours**: All slots must fall within campus operating hours (08:00 to 20:00 `Asia/Kolkata`).
+4. **Maintenance Status**: Equipment marked `maintenance` is excluded from booking.
+5. **Session Duration & Buffers**: Request duration must respect `maxSessionMinutes` and require a minimum buffer between adjacent uses.
+6. **No-Overlap Invariant**: Evaluated using half-open intervals `[start, end)`. For any two confirmed or held bookings $B_1$ and $B_2$ on resource $R$, $[B_1.\text{start}, B_1.\text{end}) \cap [B_2.\text{start}, B_2.\text{end}) = \emptyset$.
 
-### Parameter Definitions & Weight Distribution:
+### 3.2 Transparent Demo Priority Scoring ($P$)
+Among feasible candidates only, an auditable **Priority Score ($P \in [0, 100]$)** is computed based on app policy (not organizer rules):
 
-| Component | Weight | Metric Range | Calculation Logic |
+$$P = (w_d \cdot S_d) + (w_u \cdot S_u) + (w_w \cdot S_w) + (w_m \cdot S_m)$$
+
+| Factor | Weight ($w_i$) | Metric Range | Factor Definition & Demo Policy |
 | :--- | :--- | :--- | :--- |
-| **$S_d$ (Deadline Urgency)** | $w_d = 0.40$ | $0 - 100$ | Based on days until project deadline ($D$):<br>• $D \le 2\text{ days} \implies 100$<br>• $D \le 5\text{ days} \implies 85$<br>• $D \le 10\text{ days} \implies 65$<br>• $D \le 20\text{ days} \implies 40$<br>• $D > 20\text{ days} \implies 20$ |
-| **$S_a$ (Academic Level)** | $w_a = 0.25$ | $0 - 100$ | • PhD Dissertation: $100$<br>• Master's Thesis: $90$<br>• Senior Capstone Project: $85$<br>• Junior Coursework / Exploration: $50$ |
-| **$S_u$ (Fair-Share Quota)** | $w_u = 0.20$ | $0 - 100$ | Inversely proportional to student's prior booked hours in the last 14 days ($H$):<br>$$S_u = \max(15, 100 - (5 \times H))$$<br>*(Prevents resource hogging)* |
-| **$S_m$ (Requirement Fit)** | $w_m = 0.15$ | $0 - 100$ | Direct match to high-end features ($100$) vs general-purpose task on high-end rig ($40$, e.g., running basic Python on an RTX 4090 cluster). |
+| **$S_d$ (Deadline Urgency)** | $w_d = 0.40$ | $0 - 100$ | Based on days until project deadline ($D$):<br>• $D \le 2\text{ days} \implies 100$<br>• $D \le 5\text{ days} \implies 85$<br>• $D \le 10\text{ days} \implies 65$<br>• $D > 20\text{ days} \implies 25$ |
+| **$S_u$ (Scarce Resource Access)** | $w_u = 0.30$ | $0 - 100$ | Inversely proportional to student's prior booked hours on scarce hardware in the last 14 days ($H$):<br>$$S_u = \max(15, 100 - (5 \times H))$$<br>Prevents hardware hoarding. |
+| **$S_w$ (Request Waiting Time)** | $w_w = 0.20$ | $0 - 100$ | Scored by waiting age ($A$ in hours since submission):<br>$$S_w = \min(100, 20 + (5 \times A))$$<br>Prevents request starvation. |
+| **$S_m$ (Requirement Fit)** | $w_m = 0.10$ | $0 - 100$ | Direct match to high-end hardware capabilities ($100$) vs general-purpose fallback tasks ($50$). |
 
-$$\sum w_i = 0.40 + 0.25 + 0.20 + 0.15 = 1.00$$
+$$\sum w_i = 0.40 + 0.30 + 0.20 + 0.10 = 1.00$$
+
+*Note: All priority weights represent an auditable app demo policy; academic seniority and subjective labels are strictly excluded.*
 
 ### Alternative Slot Recommendation Algorithm:
 When Request B yields a lower score than Request A on slot $[T_1, T_2]$:

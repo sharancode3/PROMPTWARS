@@ -32,7 +32,6 @@ export const UserSchema = z.object({
   role: RoleSchema,
   departmentId: z.string(),
   departmentName: z.string(),
-  academicLevel: z.enum(['undergrad_junior', 'undergrad_senior', 'masters', 'phd']).optional(),
   priorUsageHours: z.number().min(0).default(0),
   certifications: z.array(z.string()).default([])
 });
@@ -96,8 +95,8 @@ export const AccessRequestSchema = z.object({
 
 export const ScoreBreakdownSchema = z.object({
   urgency: z.number().min(0).max(100),
-  academicSeniority: z.number().min(0).max(100),
-  fairShareQuota: z.number().min(0).max(100),
+  scarceResourceAccess: z.number().min(0).max(100),
+  waitingTime: z.number().min(0).max(100),
   requirementFit: z.number().min(0).max(100),
   total: z.number().min(0).max(100)
 });
@@ -149,12 +148,12 @@ export const BookingSchema = z.object({
 export const ApprovalDecisionSchema = z.object({
   requestId: z.string(),
   decision: z.enum(['approve', 'reject', 'request-changes']),
-  notes: z.string().optional(),
+  reason: z.string().min(2),
   suggestedSlot: z.object({
     date: z.string(),
     startTime: z.string(),
     endTime: z.string()
-  }).optional()
+  }).optional().nullable()
 });
 
 export const NLSearchInterpretRequestSchema = z.object({
@@ -167,4 +166,14 @@ export const NLSearchInterpretResponseSchema = z.object({
   extractedCapabilities: z.array(CapabilityTagSchema),
   suggestedDepartment: z.string().optional(),
   reasoning: z.string()
+});
+
+export const DemoScenarioSchema = z.object({
+  version: z.string(),
+  currentUser: UserSchema,
+  departments: z.array(DepartmentSchema),
+  resources: z.array(ResourceSchema),
+  requests: z.array(AccessRequestSchema),
+  bookings: z.array(BookingSchema),
+  lastResetAt: z.string().datetime()
 });

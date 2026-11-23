@@ -1,3 +1,5 @@
+export const CAMPUS_TIMEZONE = 'Asia/Kolkata';
+
 export const ROLES = ['student', 'faculty', 'admin'] as const;
 export type Role = typeof ROLES[number];
 
@@ -84,11 +86,12 @@ export const ALLOCATION_STRATEGIES = [
 ] as const;
 export type AllocationStrategy = typeof ALLOCATION_STRATEGIES[number];
 
+// Transparent Demo Policy Weights (App Policy - Not Organizer Policy)
 export const FAIRNESS_WEIGHTS = {
   URGENCY: 0.40,
-  ACADEMIC_SENIORITY: 0.25,
-  FAIR_SHARE_QUOTA: 0.20,
-  REQUIREMENT_FIT: 0.15
+  SCARCE_RESOURCE_ACCESS: 0.30,
+  WAITING_TIME: 0.20,
+  REQUIREMENT_FIT: 0.10
 } as const;
 
 export const DEFAULT_OPERATING_HOURS = {
@@ -96,6 +99,4 @@ export const DEFAULT_OPERATING_HOURS = {
   close: '20:00'
 } as const;
 
-export const DEMO_SCENARIO_KEYS = {
-  PRIMARY_CONFLICT: 'jetson-orin-capstone-collision'
-} as const;
+export const DEMO_SCENARIO_VERSION = '1.0.0';

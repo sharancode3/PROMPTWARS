@@ -77,16 +77,18 @@ To guarantee institutional trust and eliminate algorithmic bias, **LabLink stric
 
 When requests compete for the same equipment window, the engine computes an auditable **Priority Score ($P \in [0, 100]$)**:
 
-$$P = (w_d \cdot S_d) + (w_a \cdot S_a) + (w_u \cdot S_u) + (w_m \cdot S_m)$$
+$$P = (w_d \cdot S_d) + (w_u \cdot S_u) + (w_w \cdot S_w) + (w_m \cdot S_m)$$
 
-| Factor | Weight ($w_i$) | Component Logic & Range |
+| Factor | Weight ($w_i$) | Component Logic & Range (App Demo Policy) |
 | :--- | :--- | :--- |
-| **Deadline Urgency ($S_d$)** | **0.40** | Scored by days remaining ($D$): $D \le 2\text{d} \to 100$, $D \le 5\text{d} \to 85$, $D \le 10\text{d} \to 65$, $D > 20\text{d} \to 20$. |
-| **Academic Seniority ($S_a$)** | **0.25** | PhD Research ($100$), Master's Thesis ($90$), Senior Capstone ($85$), Coursework ($50$). |
-| **Fair-Share Quota ($S_u$)** | **0.20** | Inversely proportional to student's booked hours in the past 14 days ($H$): $S_u = \max(15, 100 - 5H)$. Prevents equipment hoarding. |
-| **Requirement Fit ($S_m$)** | **0.15** | Direct match to high-end hardware capabilities ($100$) vs general-purpose overkill usage ($40$). |
+| **Deadline Urgency ($S_d$)** | **0.40** | Scored by days remaining ($D$): $D \le 2\text{d} \to 100$, $D \le 5\text{d} \to 85$, $D \le 10\text{d} \to 65$, $D > 20\text{d} \to 25$. |
+| **Scarce Resource Access ($S_u$)** | **0.30** | Inversely proportional to student's booked hours on scarce hardware in the past 14 days ($H$): $S_u = \max(15, 100 - 5H)$. Prevents equipment hoarding. |
+| **Request Waiting Time ($S_w$)** | **0.20** | Scored by waiting age ($A$ in hours since submission): $S_w = \min(100, 20 + 5A)$. Prevents request starvation. |
+| **Requirement Fit ($S_m$)** | **0.10** | Direct match to high-end hardware capabilities ($100$) vs general-purpose overkill usage ($50$). |
 
-$$\sum w_i = 0.40 + 0.25 + 0.20 + 0.15 = 1.00$$
+$$\sum w_i = 0.40 + 0.30 + 0.20 + 0.10 = 1.00$$
+
+*All priority weights represent an auditable application demo policy; academic seniority and subjective status are strictly excluded.*
 
 ---
 

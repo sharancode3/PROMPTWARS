@@ -1,0 +1,24 @@
+{
+  "name": "lablink-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "LabLink: Campus Laboratory Resource-Sharing Platform",
+  "workspaces": [
+    "shared",
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=server & npm run dev --workspace=client",
+    "build": "npm run build --workspace=shared && npm run build --workspace=server && npm run build --workspace=client",
+    "start": "npm run start --workspace=server",
+    "test": "npm run test --workspaces --if-present",
+    "test:coverage": "npm run test:coverage --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "check:repo": "node -e \"const { execSync } = require('child_process'); console.log('Checking git branch & size...'); console.log(execSync('git branch --show-current').toString()); console.log(execSync('git count-objects -vH').toString());\""
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

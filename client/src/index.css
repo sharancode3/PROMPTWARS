@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: #FAFAF7;
+  --ink: #0A0A0A;
+  --ink-2: #3B3B38;
+  --ink-3: #5E5E59;
+  --rule: #0A0A0A;
+  --rule-soft: #D6D6D0;
+  --tint: #EFEFEA;
+  --signal: #C00018;
+  --signal-ink: #FFFFFF;
+  --cobalt: #1F3FD6;
+  --amber: #FFC400;
+  --forest: #0B6B3A;
+  --focus: #0A0A0A;
+}
+
+[data-theme="dark"], [data-surface="inverted"] {
+  --paper: #0A0A0A;
+  --ink: #F4F4EF;
+  --ink-2: #C9C9C2;
+  --ink-3: #A3A39C;
+  --rule: #F4F4EF;
+  --rule-soft: #34342F;
+  --tint: #171715;
+  --signal: #FF5468;
+  --cobalt: #8FA2FF;
+  --forest: #4ADE9A;
+  --amber: #FFC400;
+  --focus: #F4F4EF;
+}
+
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hairline borders & 0px radius reset */
+* {
+  border-color: var(--rule-soft);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}

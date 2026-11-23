@@ -16,6 +16,16 @@
 
 [**GitHub Repository (.git)**](https://github.com/sharancode3/PROMPTWARS.git) &nbsp;|&nbsp; [**Evaluator Audit Guide**](docs/EVALUATOR_AUDIT.md) &nbsp;|&nbsp; [**Submission Checklist**](docs/SUBMISSION_CHECKLIST.md)
 
+<div style="margin-top: 12px; padding: 12px; background: rgba(0, 0, 0, 0.04); border: 1px solid #0A0A0A; font-family: monospace; font-size: 13px;">
+
+**🚀 Live Deployed Environments (Uptime Monitored 24/7):**  
+• **Production Web App (Vercel):** [https://lablink-roan.vercel.app/](https://lablink-roan.vercel.app/)  
+• **Backend API Service (Render):** [https://promptwars-t5gu.onrender.com](https://promptwars-t5gu.onrender.com)  
+• **Healthcheck Endpoint:** [https://promptwars-t5gu.onrender.com/api/v1/healthz](https://promptwars-t5gu.onrender.com/api/v1/healthz)  
+• **Uptime Monitoring:** Active on UptimeRobot (100% Up)
+
+</div>
+
 </div>
 
 ---
@@ -71,9 +81,9 @@ $$P = (0.50 \cdot S_{\text{urgency}}) + (0.30 \cdot S_{\text{fairShare}}) + (0.2
 
 | Factor | Weight ($w_i$) | Component Policy Logic & Range |
 | :--- | :--- | :--- |
-| **Deadline Urgency ($S_{\text{urgency}}$)** | **0.50** | $S_{\text{urgency}} = 100 \times \operatorname{clamp}(1 - D / 30, 0, 1)$ where $D$ is days until project deadline. Earlier deadlines raise priority. |
-| **Fair-Share Access ($S_{\text{fairShare}}$)** | **0.30** | $S_{\text{fairShare}} = 100 \times \operatorname{clamp}(1 - H / 12, 0, 1)$ where $H$ is student's booked hours on scarce hardware in past 14 days. Prevents hardware hoarding. |
-| **Request Waiting Time ($S_{\text{waitAge}}$)** | **0.20** | $S_{\text{waitAge}} = 100 \times \operatorname{clamp}(A / 72, 0, 1)$ where $A$ is queue waiting age in hours. Prevents request starvation. |
+| **Deadline Urgency ($S_{\text{urgency}}$)** | **0.50** | $S_{\text{urgency}} = 100 \times \min(1, \max(0, 1 - D / 30))$ where $D$ is days until project deadline. Earlier deadlines raise priority. |
+| **Fair-Share Access ($S_{\text{fairShare}}$)** | **0.30** | $S_{\text{fairShare}} = 100 \times \min(1, \max(0, 1 - H / 12))$ where $H$ is student's booked hours on scarce hardware in past 14 days. Prevents hardware hoarding. |
+| **Request Waiting Time ($S_{\text{waitAge}}$)** | **0.20** | $S_{\text{waitAge}} = 100 \times \min(1, \max(0, A / 72))$ where $A$ is queue waiting age in hours. Prevents request starvation. |
 
 $$\sum w_i = 0.50 + 0.30 + 0.20 = 1.00$$
 

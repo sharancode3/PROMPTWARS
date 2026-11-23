@@ -157,6 +157,70 @@ export function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Campus Operations & Management Tools */}
+      <section className="space-y-6 pt-2 border-t border-rule">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-bold tracking-tight text-ink font-mono uppercase">
+            Campus Operations & Specialized Tooling
+          </h2>
+          <span className="text-xs font-mono text-ink-3">Live Facility Management</span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div
+            onClick={() => navigate('/timetable')}
+            className="p-5 border border-rule hover:border-ink cursor-pointer transition-colors bg-paper space-y-2 group"
+          >
+            <div className="text-xs font-mono text-signal uppercase font-semibold">06 SCHEDULE</div>
+            <h3 className="font-bold text-base text-ink group-hover:text-signal transition-colors">
+              Weekly Timetable
+            </h3>
+            <p className="text-xs text-ink-2 leading-relaxed">
+              Track open walk-in benches, scheduled capstone blocks, and departmental priority hours Mon–Sat.
+            </p>
+          </div>
+
+          <div
+            onClick={() => navigate('/labs')}
+            className="p-5 border border-rule hover:border-ink cursor-pointer transition-colors bg-paper space-y-2 group"
+          >
+            <div className="text-xs font-mono text-signal uppercase font-semibold">07 LABS</div>
+            <h3 className="font-bold text-base text-ink group-hover:text-signal transition-colors">
+              University Labs Directory
+            </h3>
+            <p className="text-xs text-ink-2 leading-relaxed">
+              Browse 5 university research laboratories, room locations, coordinators, and verified safety rules.
+            </p>
+          </div>
+
+          <div
+            onClick={() => navigate('/knowledge')}
+            className="p-5 border border-rule hover:border-ink cursor-pointer transition-colors bg-paper space-y-2 group"
+          >
+            <div className="text-xs font-mono text-signal uppercase font-semibold">09 KNOWLEDGE</div>
+            <h3 className="font-bold text-base text-ink group-hover:text-signal transition-colors">
+              Knowledge & SOPs
+            </h3>
+            <p className="text-xs text-ink-2 leading-relaxed">
+              Standard operating procedures, chemical safety standards, and high-speed instrumentation notes.
+            </p>
+          </div>
+
+          <div
+            onClick={() => navigate('/insights')}
+            className="p-5 border border-rule hover:border-ink cursor-pointer transition-colors bg-paper space-y-2 group"
+          >
+            <div className="text-xs font-mono text-signal uppercase font-semibold">10 INSIGHTS</div>
+            <h3 className="font-bold text-base text-ink group-hover:text-signal transition-colors">
+              Utilisation Telemetry
+            </h3>
+            <p className="text-xs text-ink-2 leading-relaxed">
+              Cross-department load tracking, idle bench rebalancing, and automated no-show slot recovery.
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

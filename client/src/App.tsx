@@ -10,6 +10,7 @@ import { DiscoverPage } from './pages/DiscoverPage.js';
 import { RequestPage } from './pages/RequestPage.js';
 import { ConflictCenterPage } from './pages/ConflictCenterPage.js';
 import { ApprovalsPage } from './pages/ApprovalsPage.js';
+import { TimetablePage } from './pages/TimetablePage.js';
 import { LabsPage } from './pages/LabsPage.js';
 import { BookingsPage } from './pages/BookingsPage.js';
 import { KnowledgePage } from './pages/KnowledgePage.js';
@@ -59,6 +60,7 @@ export default function App() {
                 <Route path="/request" element={<RequestPage />} />
                 <Route path="/conflicts" element={<ConflictCenterPage />} />
                 <Route path="/approvals" element={<ApprovalsPage />} />
+                <Route path="/timetable" element={<TimetablePage />} />
                 <Route path="/labs" element={<LabsPage />} />
                 <Route path="/bookings" element={<BookingsPage />} />
                 <Route path="/knowledge" element={<KnowledgePage />} />

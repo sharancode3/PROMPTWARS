@@ -12,20 +12,20 @@ export function Header({ theme, toggleTheme, onOpenMobileMenu }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-30 bg-paper/95 backdrop-blur-sm border-b border-rule">
-      {/* Top Banner Notice: Calm Demo Indicator */}
+      {/* Top Banner Notice: Professional System Indicator */}
       <div className="bg-tint/60 border-b border-rule-soft px-4 py-1.5 text-xs font-mono flex items-center justify-between text-ink-2">
         <div className="flex items-center space-x-2 truncate">
           <span className="inline-block w-2 h-2 bg-signal shrink-0" aria-hidden="true" />
-          <span className="font-semibold text-ink">DEMO MODE:</span>
-          <span className="truncate">No login required • Pure deterministic allocation engine • Asia/Kolkata</span>
+          <span className="font-semibold text-ink">CAMPUS LIVE:</span>
+          <span className="truncate">Instant Access Enabled • Deterministic Allocation Engine • Timezone: Asia/Kolkata</span>
         </div>
         <div className="hidden sm:flex items-center space-x-3 text-xs shrink-0">
           <button
             onClick={() => resetScenario()}
             className="text-ink-2 hover:text-signal hover:underline transition-colors focus-visible:outline-none"
-            title="Reset scenario to clean initial seed state"
+            title="Restore initial state baseline"
           >
-            Reset Seed Data
+            Restore Baseline
           </button>
         </div>
       </div>

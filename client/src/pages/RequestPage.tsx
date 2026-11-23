@@ -43,6 +43,8 @@ export function RequestPage() {
 
   // Post-submission summary state
   const [submittedRequest, setSubmittedRequest] = useState<AccessRequest | null>(null);
+  const [activeTab, setActiveTab] = useState<'wizard' | 'tracker'>('wizard');
+  const [trackerFilter, setTrackerFilter] = useState<string>('all');
 
   const selectedResource = scenario.resources.find((r) => r.id === selectedResourceId);
 
@@ -120,24 +122,154 @@ export function RequestPage() {
   return (
     <div className="space-y-8 pt-4 max-w-4xl mx-auto">
       {/* Header */}
-      <div className="border-b border-rule pb-6 flex items-baseline justify-between">
+      <div className="border-b border-rule pb-6 flex flex-col sm:flex-row sm:items-baseline justify-between gap-3">
         <div>
           <span className="font-mono text-signal text-xl font-bold">03</span>
           <h1 className="text-2xl font-bold tracking-tight text-ink mt-1">
-            Project-Based Access Request
+            Project-Based Access Requests
           </h1>
           <p className="text-sm text-ink-3 mt-1">
             Book dedicated laboratory time for capstones, theses, and coursework with atomic slot reservations.
           </p>
         </div>
-        <div className="font-mono text-xs border border-rule-soft bg-tint px-3 py-1.5 text-ink-2">
-          <span>Requester: </span>
-          <strong className="text-ink">{currentUser.name}</strong>
+
+        {/* Tab Switcher */}
+        <div className="flex items-center space-x-2 font-mono text-xs">
+          <button
+            type="button"
+            onClick={() => setActiveTab('wizard')}
+            className={`px-3 py-1.5 border transition-colors ${
+              activeTab === 'wizard'
+                ? 'border-ink bg-ink text-paper font-semibold'
+                : 'border-rule hover:bg-tint text-ink'
+            }`}
+          >
+            + Request Intake
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('tracker')}
+            className={`px-3 py-1.5 border transition-colors ${
+              activeTab === 'tracker'
+                ? 'border-ink bg-ink text-paper font-semibold'
+                : 'border-rule hover:bg-tint text-ink'
+            }`}
+          >
+            Request Tracker ({scenario.requests.length})
+          </button>
         </div>
       </div>
 
-      {/* Post-submission Success Banner */}
-      {submittedRequest ? (
+      {activeTab === 'tracker' ? (
+        /* Lifecycle Milestone Stepper Tracker */
+        <div className="space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-3 bg-tint/30 p-3 border border-rule font-mono text-xs">
+            <div className="flex items-center space-x-2">
+              <span className="text-ink-3 text-[11px] uppercase">Filter Status:</span>
+              {['all', 'submitted', 'under-review', 'approved', 'waitlisted'].map((st) => (
+                <button
+                  key={st}
+                  type="button"
+                  onClick={() => setTrackerFilter(st)}
+                  className={`px-2.5 py-1 border text-xs capitalize transition-colors ${
+                    trackerFilter === st
+                      ? 'border-ink bg-ink text-paper font-semibold'
+                      : 'border-rule hover:bg-tint text-ink-2'
+                  }`}
+                >
+                  {st.replace('-', ' ')}
+                </button>
+              ))}
+            </div>
+            <span className="text-ink-3 text-[11px]">Bundle Policy: Atomic all-or-nothing allocation</span>
+          </div>
+
+          <div className="space-y-4">
+            {scenario.requests
+              .filter((r) => trackerFilter === 'all' || r.status === trackerFilter)
+              .map((req) => {
+                const res = scenario.resources.find((item) => item.id === req.items[0]?.resourceId);
+                const lab = (scenario.labs || []).find((l) => l.id === res?.labId);
+
+                const isUnderReview = req.status === 'under-review' || req.status === 'approved' || req.status === 'rejected';
+                const isFinal = req.status === 'approved' || req.status === 'rejected' || req.status === 'changes-requested';
+
+                const nextActionMap: Record<string, string> = {
+                  submitted: 'Pending review by Faculty Advisor (Prof. Radhika Sen).',
+                  'under-review': 'Under deterministic conflict arbitration. Evaluating priority score.',
+                  approved: 'Slot approved. Reservation confirmed in live laboratory schedule.',
+                  rejected: 'Request declined by faculty. Alternative lab benches available in Discover.',
+                  'changes-requested': 'Advisor requested time adjustment. Resubmit request.',
+                  waitlisted: 'Queued on priority waitlist. Auto-promoted upon session forfeiture.',
+                  draft: 'Draft pending final submission.'
+                };
+
+                return (
+                  <div key={req.id} className="border border-rule bg-paper p-5 space-y-4 shadow-2xs">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-rule-soft pb-3 font-mono text-xs">
+                      <div>
+                        <span className="text-signal font-bold uppercase text-[10px] tracking-wider">
+                          REQUEST ID: {req.id}
+                        </span>
+                        <h2 className="text-base font-bold text-ink mt-0.5">{req.title}</h2>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-ink-3">By: <strong>{req.studentName}</strong></span>
+                        <span className="px-2 py-0.5 border border-rule uppercase font-bold text-[10px] bg-tint">
+                          {req.status}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Stepper Milestone Graphic */}
+                    <div className="grid grid-cols-4 gap-2 font-mono text-center text-xs py-2">
+                      <div className="space-y-1">
+                        <div className="h-1.5 w-full bg-ink" />
+                        <span className="text-[10px] font-bold text-ink block">1. Drafted</span>
+                        <span className="text-[9px] text-ink-3 block">Intake verified</span>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="h-1.5 w-full bg-ink" />
+                        <span className="text-[10px] font-bold text-ink block">2. Submitted</span>
+                        <span className="text-[9px] text-ink-3 block">Campus queue</span>
+                      </div>
+                      <div className="space-y-1">
+                        <div className={`h-1.5 w-full ${isUnderReview ? 'bg-signal' : 'bg-rule-soft'}`} />
+                        <span className={`text-[10px] font-bold block ${isUnderReview ? 'text-signal' : 'text-ink-3'}`}>
+                          3. Evaluation
+                        </span>
+                        <span className="text-[9px] text-ink-3 block">Faculty audit</span>
+                      </div>
+                      <div className="space-y-1">
+                        <div className={`h-1.5 w-full ${isFinal ? 'bg-emerald-600' : 'bg-rule-soft'}`} />
+                        <span className={`text-[10px] font-bold block ${isFinal ? 'text-emerald-700' : 'text-ink-3'}`}>
+                          4. Final Allocation
+                        </span>
+                        <span className="text-[9px] text-ink-3 block">{req.status}</span>
+                      </div>
+                    </div>
+
+                    {/* Metadata & Next Action Box */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono bg-tint/20 p-3 border border-rule-soft">
+                      <div className="space-y-1">
+                        <div><strong className="text-ink">Facility:</strong> {lab?.name || res?.location || 'Central Instrumentation'}</div>
+                        <div><strong className="text-ink">Target Device:</strong> {res?.name || req.items[0]?.resourceId}</div>
+                        <div><strong className="text-ink">Requested Slot:</strong> {req.requestedSlot.date} • {req.requestedSlot.startTime}–{req.requestedSlot.endTime}</div>
+                      </div>
+                      <div className="space-y-1">
+                        <div><strong className="text-ink">Project Deadline:</strong> {new Date(req.deadline).toLocaleDateString()}</div>
+                        <div><strong className="text-ink">Bundle Policy:</strong> All-or-nothing atomic lock</div>
+                        <div className="text-signal font-semibold pt-1">
+                          Next Action: {nextActionMap[req.status] || 'Processing request.'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      ) : submittedRequest ? (
         <div className="border-2 border-emerald-600 bg-emerald-50/20 dark:bg-emerald-950/20 p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">

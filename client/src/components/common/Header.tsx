@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useScenario, DemoRole } from '../../context/ScenarioContext.js';
 import { ThemeToggle } from './ThemeToggle.js';
 
@@ -8,7 +9,7 @@ interface HeaderProps {
 }
 
 export function Header({ theme, toggleTheme, onOpenMobileMenu }: HeaderProps) {
-  const { role, setRole, resetScenario } = useScenario();
+  const { role, setRole } = useScenario();
 
   return (
     <header className="sticky top-0 z-30 bg-paper/95 backdrop-blur-sm border-b border-rule">
@@ -20,13 +21,18 @@ export function Header({ theme, toggleTheme, onOpenMobileMenu }: HeaderProps) {
           <span className="truncate">Instant Access Enabled • Deterministic Allocation Engine • Timezone: Asia/Kolkata</span>
         </div>
         <div className="hidden sm:flex items-center space-x-3 text-xs shrink-0">
-          <button
-            onClick={() => resetScenario()}
-            className="text-ink-2 hover:text-signal hover:underline transition-colors focus-visible:outline-none"
-            title="Restore initial state baseline"
+          <span className="text-emerald-700 dark:text-emerald-400 font-medium flex items-center space-x-1">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            <span>Operational</span>
+          </span>
+          <span className="text-rule">|</span>
+          <Link
+            to="/settings"
+            className="text-ink-3 hover:text-ink transition-colors"
+            title="System Configuration &amp; State Management"
           >
-            Restore Baseline
-          </button>
+            System Config &rarr;
+          </Link>
         </div>
       </div>
 

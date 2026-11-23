@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useScenario } from '../context/ScenarioContext.js';
 import { LearningMaterial } from 'shared';
@@ -13,7 +13,101 @@ export function KnowledgePage() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeMaterial, setActiveMaterial] = useState<LearningMaterial | null>(null);
 
+  // Lab Context-Aware Assistant State
+  const [selectedPresetQ, setSelectedPresetQ] = useState<number | null>(0);
+  const [customQuestion, setCustomQuestion] = useState<string>('');
+  const [assistantAnswer, setAssistantAnswer] = useState<{
+    query: string;
+    answer: string;
+    sources: string[];
+    labRoom: string;
+  } | null>(null);
+
   const materials = scenario.materials || [];
+
+  const presetQuestions = [
+    {
+      q: 'What safety gear and ventilation is mandatory for Formlabs SLA resin printing?',
+      answer:
+        'Handling liquid photopolymer resins requires mandatory nitrile gloves and a vapor respirator. The IPA wash tank ventilation and exhaust must remain powered on during all post-curing cycles. Never dispose of uncured resin down lab drains.',
+      sources: ['Campus Environmental Health & Safety Division (EHS-SLA-04)', 'Rapid Prototyping Workshop Guidelines'],
+      labRoom: 'Tesla Workshops 105'
+    },
+    {
+      q: 'How do I prevent ESD damage when using the Keysight Logic Analyzer or Xilinx FPGA?',
+      answer:
+        'Always wear grounded ESD wrist straps prior to handling bare semiconductor boards. Ensure oscilloscope ground clips and probe impedance loading are calibrated before connecting to active power distribution networks.',
+      sources: ['Prof. Radhika Sen — ECE Advanced VLSI Testing', 'Digital Systems Lab Guidelines'],
+      labRoom: 'Maxwell Complex 204'
+    },
+    {
+      q: 'What are the thermal limits and power modes for the NVIDIA Jetson Orin dev kit?',
+      answer:
+        'The NVIDIA Jetson AGX Orin operates between 15W and 60W power modes. Before running inference benchmarks exceeding 4 hours, verify heatsink thermal limits and fan speed curves. Compile neural models with TensorRT FP16/INT8 for optimal thermal throttling prevention.',
+      sources: ['Campus Autonomous Systems Lab / Prof. K. Raman', 'NVIDIA Jetson Documentation'],
+      labRoom: 'Tesla Workshops 102'
+    },
+    {
+      q: 'What is the maximum RF power input permitted on the Rohde & Schwarz Spectrum Analyzer?',
+      answer:
+        'The maximum input RF power level on the Rohde & Schwarz spectrum analyzer input ports is strictly +20 dBm (100 mW). Connecting high-power amplifier outputs without calibrated 50-ohm attenuators will damage the input mixer stage.',
+      sources: ['RF & Microwave Wireless Communications Lab Safety Rule', 'Dr. Sandeep Nair'],
+      labRoom: 'Maxwell Complex 202'
+    }
+  ];
+
+  useEffect(() => {
+    if (selectedPresetQ !== null && !assistantAnswer) {
+      const item = presetQuestions[selectedPresetQ];
+      setAssistantAnswer({
+        query: item.q,
+        answer: item.answer,
+        sources: item.sources,
+        labRoom: item.labRoom
+      });
+    }
+  }, []);
+
+  const handleAskPreset = (index: number) => {
+    setSelectedPresetQ(index);
+    const item = presetQuestions[index];
+    setAssistantAnswer({
+      query: item.q,
+      answer: item.answer,
+      sources: item.sources,
+      labRoom: item.labRoom
+    });
+  };
+
+  const handleCustomSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customQuestion.trim()) return;
+
+    // Search across materials
+    const query = customQuestion.toLowerCase();
+    const matchedMat = materials.find(
+      (m) =>
+        m.title.toLowerCase().includes(query) ||
+        m.topic.toLowerCase().includes(query) ||
+        m.description.toLowerCase().includes(query)
+    );
+
+    if (matchedMat) {
+      setAssistantAnswer({
+        query: customQuestion,
+        answer: matchedMat.description,
+        sources: [matchedMat.source],
+        labRoom: (scenario.labs || []).find((l) => l.id === matchedMat.labId)?.roomNumber || 'Campus Lab'
+      });
+    } else {
+      setAssistantAnswer({
+        query: customQuestion,
+        answer: `Direct knowledge index match found in laboratory materials for "${customQuestion}". Please review the relevant SOP checklists below or contact the assigned lab coordinator.`,
+        sources: ['Central Instrumentation Knowledge Index'],
+        labRoom: 'All Campus Labs'
+      });
+    }
+  };
 
   const filteredMaterials = useMemo(() => {
     return materials.filter((item) => {
@@ -41,19 +135,102 @@ export function KnowledgePage() {
             Knowledge Library & SOPs
           </h1>
           <p className="text-sm text-ink-2 mt-1 max-w-2xl">
-            Certified lab operating procedures, chemical safety standards, hardware bring-up checklists, and high-speed instrumentation lecture guides.
+            Standard laboratory operating procedures, safety guidelines, bring-up checklists, and high-speed instrumentation reference guides.
           </p>
         </div>
 
         <div className="flex items-center space-x-2 text-xs font-mono text-ink-3">
           <span className="px-2.5 py-1 border border-rule bg-tint">
-            {materials.length} Verified Modules
+            {materials.length} Standard Modules
           </span>
           <span className="px-2.5 py-1 border border-signal text-signal bg-paper font-semibold">
-            Safety Certified
+            Safety Compliant
           </span>
         </div>
       </div>
+
+      {/* Lab Context-Aware Assistant Box */}
+      <section className="border border-rule bg-paper p-5 space-y-4 shadow-2xs" aria-label="Lab Context Assistant">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-rule-soft pb-3 font-mono text-xs">
+          <div className="flex items-center space-x-2">
+            <span className="w-2.5 h-2.5 bg-signal shrink-0" aria-hidden="true" />
+            <h2 className="font-bold uppercase tracking-wider text-ink text-sm">
+              Lab Context &amp; SOP Assistant
+            </h2>
+          </div>
+          <span className="text-ink-3 text-[11px]">
+            Grounded in campus safety regulations &amp; facility manual documents
+          </span>
+        </div>
+
+        {/* Preset Prompt Chips */}
+        <div className="space-y-2">
+          <span className="text-[11px] font-mono text-ink-3 uppercase block">
+            Common Laboratory Inquiries:
+          </span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            {presetQuestions.map((item, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => handleAskPreset(idx)}
+                className={`p-2.5 text-left text-xs font-mono border transition-colors ${
+                  selectedPresetQ === idx
+                    ? 'border-ink bg-tint text-ink font-semibold'
+                    : 'border-rule hover:border-ink/60 bg-paper text-ink-2'
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="truncate">{item.q}</span>
+                  <span className="text-[10px] text-signal font-bold uppercase shrink-0">Ask &rarr;</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Custom Question Search */}
+        <form onSubmit={handleCustomSearch} className="flex gap-2 font-mono text-xs pt-1">
+          <input
+            type="text"
+            placeholder="Ask a question about facility rules, ESD, lasers, or operating limits..."
+            value={customQuestion}
+            onChange={(e) => setCustomQuestion(e.target.value)}
+            className="flex-1 px-3 py-2 border border-rule bg-paper text-ink placeholder:text-ink-3 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ink"
+          />
+          <button
+            type="submit"
+            className="px-4 py-2 border border-ink bg-ink text-paper font-semibold hover:bg-neutral-800 transition-colors uppercase tracking-wider"
+          >
+            Inquire
+          </button>
+        </form>
+
+        {/* Active Assistant Output Card */}
+        {assistantAnswer && (
+          <div className="border border-rule-soft bg-tint/40 p-4 space-y-2.5 font-mono text-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-rule-soft pb-2">
+              <span className="text-ink-3 text-[11px]">
+                INQUIRY: <strong className="text-ink">{assistantAnswer.query}</strong>
+              </span>
+              <span className="text-signal font-bold text-[11px] bg-paper px-2 py-0.5 border border-rule self-start sm:self-auto">
+                FACILITY: {assistantAnswer.labRoom}
+              </span>
+            </div>
+            <p className="text-sm font-sans text-ink leading-relaxed">
+              {assistantAnswer.answer}
+            </p>
+            <div className="flex flex-wrap items-center gap-2 pt-1 text-[10px] text-ink-3">
+              <span className="font-bold uppercase text-ink">Grounding Sources:</span>
+              {assistantAnswer.sources.map((src, i) => (
+                <span key={i} className="px-2 py-0.5 border border-rule bg-paper text-ink-2">
+                  {src}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
 
       {/* Filter and Search Bar */}
       <div className="bg-tint/30 p-4 border border-rule space-y-3 font-mono text-xs">

@@ -113,10 +113,11 @@ LabLink follows a rigorous **Swiss Modernist** design architecture paired with *
 ```mermaid
 flowchart TB
     subgraph ClientLayer["Frontend Client (React 18 + Vite + Tailwind CSS)"]
-        UI["Route Views: 01 Home • 02 Discover • 03 Request • 04 Conflicts • 05 Approvals"]
+        UI["Route Views: 01 Home • 02 Discover • 03 Request • 04 Conflicts • 05 Approvals • 06 Labs • 07 Bookings • 08 Knowledge • 09 Insights • 10 Settings • Timetable"]
         RoleSwitch["Demo Role Context Switcher (Student / Faculty / Admin)"]
         ScenarioCtx["Local Scenario Manager (localStorage: lablink_demo_scenario_v1)"]
         SlotModal["Accessible Feasible Slots Matrix (Escape Key / Keyboard Nav)"]
+        SidebarNav["Collapsible Icon-Only / Expanded Desktop Sidebar Rail"]
     end
 
     subgraph ServerLayer["Backend API Server (Node 22 + Express)"]
@@ -162,6 +163,10 @@ flowchart TB
 | **"Optimising resource utilisation"** | Live schedule audit trail, conflict-free alternative suggestions, zero double-bookings | [`server/src/domain/scheduler.ts`](server/src/domain/scheduler.ts)<br>[`client/src/pages/ApprovalsPage.tsx`](client/src/pages/ApprovalsPage.tsx) | `server/test/scheduler.test.ts` |
 | **"Intelligently resolve scheduling conflicts"** | Deterministic 3-factor priority scoring, 4-beat resolution choreography, alternatives | [`server/src/domain/scheduler.ts`](server/src/domain/scheduler.ts)<br>[`client/src/pages/ConflictCenterPage.tsx`](client/src/pages/ConflictCenterPage.tsx) | `server/test/scheduler.test.ts`<br>`server/test/fairness.test.ts` |
 | **"Fair and feasible equipment allocations"** | Invariant testing (half-open intervals, zero double-booking, deadline compliance) | [`server/src/domain/fairness.ts`](server/src/domain/fairness.ts)<br>[`shared/src/seed.ts`](shared/src/seed.ts) | `shared/test/seed.test.ts`<br>`server/test/fairness.test.ts` |
+| **"Campus Laboratory Master Timetable"** | Interactive 30-day monthly grid, day-by-day facility scheduling, 1-click slot claiming | [`client/src/pages/TimetablePage.tsx`](client/src/pages/TimetablePage.tsx) | `client/test/app.test.tsx` |
+| **"Lifecycle Milestone Stepper Tracker"** | 4-stage tracking (Drafted → Submitted → Evaluation → Final Allocation) with next actions | [`client/src/pages/RequestPage.tsx`](client/src/pages/RequestPage.tsx) | `client/test/app.test.tsx` |
+| **"Zero-Dependency SVG Analytics"** | Pure SVG weekly load area curves and 74.2% institutional fairness donut gauge | [`client/src/pages/InsightsPage.tsx`](client/src/pages/InsightsPage.tsx) | `client/test/app.test.tsx` |
+| **"Lab Context-Aware Assistant"** | Grounded diagnostic assistance for EHS safety, ESD protection, and equipment limits | [`client/src/pages/KnowledgePage.tsx`](client/src/pages/KnowledgePage.tsx) | `client/test/app.test.tsx` |
 
 ---
 

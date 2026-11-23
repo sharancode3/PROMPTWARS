@@ -119,9 +119,8 @@ export const ConflictRequestSchema = AccessRequestSchema;
 
 export const ScoreBreakdownSchema = z.object({
   urgency: z.number().min(0).max(100),
-  scarceResourceAccess: z.number().min(0).max(100),
-  waitingTime: z.number().min(0).max(100),
-  requirementFit: z.number().min(0).max(100),
+  fairShare: z.number().min(0).max(100),
+  waitAge: z.number().min(0).max(100),
   total: z.number().min(0).max(100)
 });
 
@@ -197,6 +196,7 @@ export const NLSearchInterpretResponseSchema = z.object({
 export const DemoScenarioSchema = z.object({
   version: z.string(),
   currentUser: UserSchema,
+  users: z.array(UserSchema).default([]),
   departments: z.array(DepartmentSchema),
   resources: z.array(ResourceSchema),
   requests: z.array(AccessRequestSchema),

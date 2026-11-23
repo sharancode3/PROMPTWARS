@@ -86,12 +86,18 @@ export const ALLOCATION_STRATEGIES = [
 ] as const;
 export type AllocationStrategy = typeof ALLOCATION_STRATEGIES[number];
 
-// Transparent Demo Policy Weights (App Policy - Not Organizer Policy)
-export const FAIRNESS_WEIGHTS = {
-  URGENCY: 0.40,
-  SCARCE_RESOURCE_ACCESS: 0.30,
-  WAITING_TIME: 0.20,
-  REQUIREMENT_FIT: 0.10
+// Transparent Demo Policy Weights & Thresholds (App Policy - Not Organizer Policy)
+export const FAIRNESS_POLICY = {
+  WEIGHTS: {
+    URGENCY: 0.50,
+    FAIR_SHARE: 0.30,
+    WAIT_AGE: 0.20
+  },
+  THRESHOLDS: {
+    MAX_DEADLINE_DAYS: 30,
+    MAX_SCARCE_HOURS: 12,
+    MAX_WAIT_HOURS: 72
+  }
 } as const;
 
 export const DEFAULT_OPERATING_HOURS = {

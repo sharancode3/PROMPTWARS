@@ -39,7 +39,7 @@ Every dependency in the repository serves a concrete architectural purpose:
 | `cors` | `server` | Controlled cross-origin resource sharing |
 | `compression` | `server` | Gzip compression for API payloads and client assets |
 | `pino` | `server` | Structured, low-overhead logging |
-| `@google/generative-ai` | `server` | Server-side Gemini 1.5/Flash model integration |
+| `@google/genai` | `server` | Current official Google GenAI SDK (migrated from legacy `@google/generative-ai` in Stage 2) for server-side Gemini Flash model integration |
 | `react`, `react-dom` | `client` | Core UI component model |
 | `react-router-dom` | `client` | Client-side routing for the 8 core screens |
 | `tailwindcss` | `client` | Utility-first CSS implementing the Swiss design tokens |

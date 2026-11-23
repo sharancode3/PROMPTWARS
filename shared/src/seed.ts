@@ -353,6 +353,7 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
   return {
     version: DEMO_SCENARIO_VERSION,
     currentUser: students[0], // Default: Alex Rivera (Student)
+    users: [...students, facultyUser],
     departments,
     resources,
     requests,

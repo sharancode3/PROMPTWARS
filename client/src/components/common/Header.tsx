@@ -12,7 +12,7 @@ export function Header({ theme, toggleTheme, onOpenMobileMenu }: HeaderProps) {
   const { role, setRole } = useScenario();
 
   return (
-    <header className="sticky top-0 z-30 bg-paper/95 backdrop-blur-sm border-b border-rule">
+    <header className="sticky top-0 z-30 bg-paper border-b border-rule shadow-xs">
       {/* Top Banner Notice: Professional System Indicator */}
       <div className="bg-tint/60 border-b border-rule-soft px-4 py-1.5 text-xs font-mono flex items-center justify-between text-ink-2">
         <div className="flex items-center space-x-2 truncate">

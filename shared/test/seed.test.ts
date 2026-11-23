@@ -16,7 +16,7 @@ describe('Shared Seed Scenario & Schema', () => {
     expect(scenario.resources.length).toBe(12);
     expect(scenario.projects?.length).toBe(5);
     expect(scenario.requests.length).toBe(3);
-    expect(scenario.bookings.length).toBe(1);
+    expect(scenario.bookings.length).toBe(8);
 
     // Verify contested scenario exists
     const jetsonRequests = scenario.requests.filter(

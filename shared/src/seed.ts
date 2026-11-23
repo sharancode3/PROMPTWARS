@@ -20,6 +20,9 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
   const day1Str = formatDate(addDays(today, 1));
   const day2Str = formatDate(addDays(today, 2));
   const day3Str = formatDate(addDays(today, 3));
+  const day4Str = formatDate(addDays(today, 4));
+  const day5Str = formatDate(addDays(today, 5));
+  const day6Str = formatDate(addDays(today, 6));
   const day7Str = formatDate(addDays(today, 7));
   const day18Str = formatDate(addDays(today, 18));
 
@@ -428,7 +431,7 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
       role: 'student',
       departmentId: 'dept_cse',
       departmentName: 'Computer Science & Engineering',
-      priorUsageHours: 14,
+      priorUsageHours: 7,
       certifications: ['SAFETY_MECH_L1']
     },
     {
@@ -606,6 +609,76 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
       date: day1Str,
       startTime: '14:00',
       endTime: '16:00',
+      status: 'confirmed'
+    },
+    {
+      id: 'book_alex_orin',
+      resourceId: 'res_jetson_orin_01',
+      studentId: 'user_alex',
+      studentName: 'Alex Rivera',
+      date: day1Str,
+      startTime: '09:30',
+      endTime: '12:00',
+      status: 'confirmed'
+    },
+    {
+      id: 'book_priya_gpu',
+      resourceId: 'res_rtx4090_rig_01',
+      studentId: 'user_priya',
+      studentName: 'Priya Patel',
+      date: day1Str,
+      startTime: '13:00',
+      endTime: '17:00',
+      status: 'confirmed'
+    },
+    {
+      id: 'book_marcus_fpga',
+      resourceId: 'res_zynq_fpga_01',
+      studentId: 'user_marcus',
+      studentName: 'Marcus Chen',
+      date: day2Str,
+      startTime: '10:00',
+      endTime: '13:00',
+      status: 'confirmed'
+    },
+    {
+      id: 'book_jordan_sla',
+      resourceId: 'res_formlabs_3d_01',
+      studentId: 'user_jordan',
+      studentName: 'Jordan Lee',
+      date: day2Str,
+      startTime: '14:00',
+      endTime: '17:00',
+      status: 'confirmed'
+    },
+    {
+      id: 'book_priya_uv',
+      resourceId: 'res_shimadzu_uv_01',
+      studentId: 'user_priya',
+      studentName: 'Priya Patel',
+      date: day3Str,
+      startTime: '10:00',
+      endTime: '12:30',
+      status: 'confirmed'
+    },
+    {
+      id: 'book_alex_thermal',
+      resourceId: 'res_flir_thermal_01',
+      studentId: 'user_alex',
+      studentName: 'Alex Rivera',
+      date: day3Str,
+      startTime: '14:00',
+      endTime: '16:00',
+      status: 'confirmed'
+    },
+    {
+      id: 'book_jordan_hplc',
+      resourceId: 'res_agilent_hplc_01',
+      studentId: 'user_jordan',
+      studentName: 'Jordan Lee',
+      date: day4Str,
+      startTime: '09:00',
+      endTime: '12:00',
       status: 'confirmed'
     }
   ];

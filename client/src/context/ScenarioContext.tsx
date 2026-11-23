@@ -9,7 +9,7 @@ import {
 } from 'shared';
 import * as api from '../api/client.js';
 
-const STORAGE_KEY = 'lablink_demo_scenario_v2';
+const STORAGE_KEY = 'lablink_demo_scenario_v3';
 
 export type DemoRole = 'student' | 'faculty' | 'admin';
 
@@ -36,7 +36,7 @@ export function ScenarioProvider({ children }: { children: React.ReactNode }) {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = DemoScenarioSchema.safeParse(JSON.parse(saved));
-        if (parsed.success && parsed.data.resources.length >= 12 && (parsed.data.projects?.length || 0) >= 5) {
+        if (parsed.success && parsed.data.resources.length >= 12 && (parsed.data.bookings?.length || 0) >= 8) {
           return parsed.data;
         }
       }

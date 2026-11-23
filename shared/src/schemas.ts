@@ -25,6 +25,25 @@ export const DepartmentSchema = z.object({
   contactEmail: z.string().email()
 });
 
+export const LabSchema = z.object({
+  id: z.string(),
+  departmentId: z.string(),
+  name: z.string(),
+  roomNumber: z.string(),
+  operatingHours: z.object({
+    open: z.string().regex(/^\d{2}:\d{2}$/),
+    close: z.string().regex(/^\d{2}:\d{2}$/)
+  }),
+  coordinatorName: z.string()
+});
+
+export const CertificationSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  validityDays: z.number().default(365)
+});
+
 export const UserSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -35,6 +54,8 @@ export const UserSchema = z.object({
   priorUsageHours: z.number().min(0).default(0),
   certifications: z.array(z.string()).default([])
 });
+
+export const DemoUserSchema = UserSchema;
 
 export const ResourceSchema = z.object({
   id: z.string(),
@@ -93,6 +114,9 @@ export const AccessRequestSchema = z.object({
   submittedAt: z.string().datetime()
 });
 
+export const ProjectRequestSchema = AccessRequestSchema;
+export const ConflictRequestSchema = AccessRequestSchema;
+
 export const ScoreBreakdownSchema = z.object({
   urgency: z.number().min(0).max(100),
   scarceResourceAccess: z.number().min(0).max(100),
@@ -100,6 +124,8 @@ export const ScoreBreakdownSchema = z.object({
   requirementFit: z.number().min(0).max(100),
   total: z.number().min(0).max(100)
 });
+
+export const PriorityBreakdownSchema = ScoreBreakdownSchema;
 
 export const AlternativeSlotSchema = z.object({
   slotId: z.string(),

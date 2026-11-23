@@ -1,12 +1,18 @@
 import { z } from 'zod';
 import {
   DepartmentSchema,
+  LabSchema,
+  CertificationSchema,
   UserSchema,
+  DemoUserSchema,
   ResourceSchema,
   ProjectSchema,
   RequestItemSchema,
   AccessRequestSchema,
+  ProjectRequestSchema,
+  ConflictRequestSchema,
   ScoreBreakdownSchema,
+  PriorityBreakdownSchema,
   AlternativeSlotSchema,
   AllocationProposalSchema,
   BookingSchema,
@@ -17,12 +23,18 @@ import {
 } from './schemas.js';
 
 export type Department = z.infer<typeof DepartmentSchema>;
+export type Lab = z.infer<typeof LabSchema>;
+export type Certification = z.infer<typeof CertificationSchema>;
 export type User = z.infer<typeof UserSchema>;
+export type DemoUser = z.infer<typeof DemoUserSchema>;
 export type Resource = z.infer<typeof ResourceSchema>;
 export type Project = z.infer<typeof ProjectSchema>;
 export type RequestItem = z.infer<typeof RequestItemSchema>;
 export type AccessRequest = z.infer<typeof AccessRequestSchema>;
+export type ProjectRequest = z.infer<typeof ProjectRequestSchema>;
+export type ConflictRequest = z.infer<typeof ConflictRequestSchema>;
 export type ScoreBreakdown = z.infer<typeof ScoreBreakdownSchema>;
+export type PriorityBreakdown = z.infer<typeof PriorityBreakdownSchema>;
 export type AlternativeSlot = z.infer<typeof AlternativeSlotSchema>;
 export type AllocationProposal = z.infer<typeof AllocationProposalSchema>;
 export type Booking = z.infer<typeof BookingSchema>;

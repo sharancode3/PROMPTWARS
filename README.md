@@ -113,16 +113,17 @@ LabLink follows a rigorous **Swiss Modernist** design architecture paired with *
 ```mermaid
 flowchart TB
     subgraph ClientLayer["Frontend Client (React 18 + Vite + Tailwind CSS)"]
-        UI["Route Views: 01 Home • 02 Discover • 03 Request • 04 Conflicts • 05 Approvals • 06 Labs • 07 Bookings • 08 Knowledge • 09 Insights • 10 Settings • Timetable"]
+        UI["Route Views: 01 Home • My Lab Workspace • 02 Discover • 03 Request • 04 Conflicts • 05 Approvals • 06 Timetable • 07 Labs • 08 Bookings • 09 Knowledge • 10 Insights • 11 Settings"]
         RoleSwitch["Demo Role Context Switcher (Student / Faculty / Admin)"]
-        ScenarioCtx["Local Scenario Manager (localStorage: lablink_demo_scenario_v1)"]
+        ScenarioCtx["Local Scenario Manager (localStorage: lablink_demo_scenario_v3)"]
         SlotModal["Accessible Feasible Slots Matrix (Escape Key / Keyboard Nav)"]
+        VideoModalComp["Interactive SOP Video Modal (Fullscreen API + Timestamps)"]
         SidebarNav["Collapsible Icon-Only / Expanded Desktop Sidebar Rail"]
     end
 
     subgraph ServerLayer["Backend API Server (Node 22 + Express)"]
         APIRouter["Express API Router (/api/v1/*)"]
-        SecurityMW["Helmet Security Headers + CORS + Compression"]
+        SecurityMW["Helmet Security Headers + CORS + Compression + Rate-Limiter"]
         
         subgraph DomainServices["Pure Domain Logic (Zero I/O)"]
             Feasibility["Feasibility Gatekeeper (Operating Hours 08:00-20:00, Certs, Buffers)"]
@@ -139,10 +140,10 @@ flowchart TB
 
     subgraph SharedLayer["Shared Contract Package (shared/)"]
         ZodSchemas["Strict Zod Validation Schemas (DemoScenario, AccessRequest, Resource)"]
-        SeedGen["Canonical Seed Generator (10 Resources, 4 Students, 1 Faculty, Jetson Collision)"]
+        SeedGen["Canonical Seed Generator (12 Resources, 4 Depts, 6 Labs, 5 Projects, 8 Bookings)"]
     end
 
-    ClientLayer -->|REST / JSON| APIRouter
+    ClientLayer -->|REST / JSON External Rewrite| APIRouter
     APIRouter --> SecurityMW
     SecurityMW --> DomainServices
     SecurityMW --> AIAdapter
@@ -173,7 +174,24 @@ flowchart TB
 
 ---
 
-## 7. Deployment Guide
+## 7. Deep-Dive Feature Spotlight: Student Workspace & Interactive Media
+
+### A. My Lab Workspace (`/mylab`)
+To empower student researchers and remove inter-department friction, LabLink provides a unified 5-in-1 student console:
+1. **Projects & Hardware Bundling**: Tracks multi-equipment research bundles (e.g. Jetson Orin + FLIR Thermal Camera) with atomic feasibility checks. Displays an explicit 6-stage lifecycle stepper (`Drafted → Faculty Review → Reservation → Pre-Lab Prep → Active Session → Completion`).
+2. **Side-by-Side Equipment Comparison**: Direct comparison matrix for up to 3 instruments across technical specifications, location, mandatory safety certifications, and turnaround buffers. Includes a deterministic **"Find Alternatives"** engine ranking substitutes by capability overlap (+40%), department proximity (+30%), and live availability (+30%).
+3. **Session Lifecycle & Diagnostic Logging**: Pre-session readiness checklist (safety PPE, POST, SOP review), door lock token (`LAB-XXXX`), and a post-session diagnostic condition logger (`operational`, `needs-cleaning`, `calibration-drift`, `hardware-issue`).
+4. **Lab Pocket Card**: Mobile-optimized access pass featuring a bench lock PIN, scheduled device summary, and an **offline cache status indicator** showing the exact sync timestamp (`Asia/Kolkata`).
+5. **Grounded Laboratory Assistant**: Context-aware assistant scoped to specific campus laboratories (Autonomous Systems, ML HPC Lab, Bio-Molecular Spectroscopy Lab) answering protocol queries with direct institutional citations.
+
+### B. Standard Operating Procedure (SOP) Video System
+- **Interactive Video Modal (`VideoModal.tsx`)**: Integrates official laboratory safety demonstrations and hardware bring-up videos via an embedded YouTube player.
+- **Full-Screen Immersion**: One-click fullscreen toggle using the browser's native Fullscreen API (`requestFullscreen` / `exitFullscreen`).
+- **Procedural Checkpoints**: Structured timestamps for Power-On Self Test (POST), chemical handling/ESD grounding, measurement sweeps, and sanitization/standby routines.
+
+---
+
+## 8. Deployment Guide
 
 LabLink is architected to run seamlessly across all target deployment environments.
 
@@ -220,7 +238,7 @@ gcloud run deploy lablink \
 
 ---
 
-## 8. Automated Testing & Verification
+## 9. Automated Testing & Verification
 
 LabLink enforces 100% passing tests across all domain invariants, fairness policies, API endpoints, and client navigation:
 
@@ -248,7 +266,7 @@ npm run build
 
 ---
 
-## 9. Competition Compliance Checklist
+## 10. Competition Compliance Checklist
 
 | Constraint | Organizer Requirement | Verified Status | Evidence |
 | :--- | :--- | :--- | :--- |

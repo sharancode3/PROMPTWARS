@@ -26,12 +26,12 @@ describe('App Root Component & Navigation', () => {
     expect(screen.getByRole('button', { name: /discover equipment/i })).toBeDefined();
   });
 
-  it('renders all 5 core navigation landmarks', () => {
+  it('renders all core navigation landmarks', () => {
     render(<App />);
-    expect(screen.getByText('01 HOME')).toBeDefined();
-    expect(screen.getByText('02 DISCOVER')).toBeDefined();
-    expect(screen.getByText('03 REQUEST')).toBeDefined();
-    expect(screen.getByText('04 CONFLICTS')).toBeDefined();
-    expect(screen.getByText('05 APPROVALS')).toBeDefined();
+    expect(screen.getByText('Overview')).toBeDefined();
+    expect(screen.getByText('My Lab Workspace')).toBeDefined();
+    expect(screen.getByText('Equipment Catalog')).toBeDefined();
+    expect(screen.getByText('Conflict Center')).toBeDefined();
+    expect(screen.getByText('Faculty Queue')).toBeDefined();
   });
 });

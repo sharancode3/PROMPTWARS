@@ -18,7 +18,7 @@ describe('Server API Endpoints (/api/v1/*)', () => {
     const resAll = await request(app).get('/api/v1/resources');
     expect(resAll.status).toBe(200);
     expect(Array.isArray(resAll.body)).toBe(true);
-    expect(resAll.body.length).toBe(10);
+    expect(resAll.body.length).toBe(12);
 
     const resMech = await request(app).get('/api/v1/resources?department=dept_mech');
     expect(resMech.status).toBe(200);
@@ -190,7 +190,7 @@ describe('Server API Endpoints (/api/v1/*)', () => {
   it('POST /api/v1/demo/reset generates a fresh seeded scenario', async () => {
     const res = await request(app).post('/api/v1/demo/reset');
     expect(res.status).toBe(200);
-    expect(res.body.departments.length).toBe(3);
-    expect(res.body.resources.length).toBe(10);
+    expect(res.body.departments.length).toBe(4);
+    expect(res.body.resources.length).toBe(12);
   });
 });

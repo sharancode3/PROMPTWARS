@@ -11,8 +11,10 @@ describe('Shared Seed Scenario & Schema', () => {
     expect(parsed.success).toBe(true);
 
     // Verify departments
-    expect(scenario.departments.length).toBe(3);
-    expect(scenario.resources.length).toBe(10);
+    expect(scenario.departments.length).toBe(4);
+    expect(scenario.labs?.length).toBe(6);
+    expect(scenario.resources.length).toBe(12);
+    expect(scenario.projects?.length).toBe(5);
     expect(scenario.requests.length).toBe(3);
     expect(scenario.bookings.length).toBe(1);
 

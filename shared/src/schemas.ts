@@ -228,6 +228,7 @@ export const DemoScenarioSchema = z.object({
   departments: z.array(DepartmentSchema),
   labs: z.array(LabSchema).default([]),
   resources: z.array(ResourceSchema),
+  projects: z.array(ProjectSchema).default([]),
   requests: z.array(AccessRequestSchema),
   bookings: z.array(BookingSchema),
   materials: z.array(LearningMaterialSchema).default([]),

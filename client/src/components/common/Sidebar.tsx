@@ -14,7 +14,6 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
   const navItems = [
     {
       to: '/',
-      tag: '01 HOME',
       label: 'Overview',
       icon: (
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
@@ -24,8 +23,19 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
       )
     },
     {
+      to: '/mylab',
+      label: 'My Lab Workspace',
+      badge: 'STUDENT',
+      icon: (
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+          <path d="M9 3h6v4H9z" />
+          <path d="M10 7v4L6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l-4-8V7" />
+          <line x1="8" y1="15" x2="16" y2="15" />
+        </svg>
+      )
+    },
+    {
       to: '/discover',
-      tag: '02 DISCOVER',
       label: 'Equipment Catalog',
       icon: (
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
@@ -36,7 +46,6 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
     },
     {
       to: '/request',
-      tag: '03 REQUEST',
       label: 'Project Intake',
       icon: (
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
@@ -49,9 +58,9 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
     },
     {
       to: '/conflicts',
-      tag: '04 CONFLICTS',
       label: 'Conflict Center',
       highlight: true,
+      badge: 'STAR',
       icon: (
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
           <polygon points="12 2 2 22 22 22" />
@@ -62,7 +71,6 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
     },
     {
       to: '/approvals',
-      tag: '05 APPROVALS',
       label: 'Faculty Queue',
       icon: (
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
@@ -73,7 +81,6 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
     },
     {
       to: '/timetable',
-      tag: '06 SCHEDULE',
       label: 'Lab Timetable',
       icon: (
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
@@ -88,7 +95,6 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
     },
     {
       to: '/labs',
-      tag: '07 LABS',
       label: 'University Labs',
       icon: (
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
@@ -99,7 +105,6 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
     },
     {
       to: '/bookings',
-      tag: '08 BOOKINGS',
       label: 'Active Bookings',
       icon: (
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
@@ -112,7 +117,6 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
     },
     {
       to: '/knowledge',
-      tag: '09 KNOWLEDGE',
       label: 'Knowledge & SOPs',
       icon: (
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
@@ -123,7 +127,6 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
     },
     {
       to: '/insights',
-      tag: '10 INSIGHTS',
       label: 'Lab Analytics',
       icon: (
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
@@ -135,7 +138,6 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
     },
     {
       to: '/settings',
-      tag: '11 SETTINGS',
       label: 'System Config',
       icon: (
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
@@ -258,8 +260,16 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
                   <span className="shrink-0">{item.icon}</span>
                   {!isCollapsed && <span className="truncate">{item.label}</span>}
                 </div>
-                {!isCollapsed && (
-                  <span className="text-[10px] opacity-70 shrink-0 ml-1">{item.tag}</span>
+                {!isCollapsed && item.badge && (
+                  <span
+                    className={`text-[9px] font-mono px-1.5 py-0.5 border uppercase font-bold shrink-0 ml-1 ${
+                      item.highlight
+                        ? 'border-white/40 bg-white/20 text-white'
+                        : 'border-rule bg-paper text-ink-3'
+                    }`}
+                  >
+                    {item.badge}
+                  </span>
                 )}
               </NavLink>
             ))}

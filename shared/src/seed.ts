@@ -1,4 +1,4 @@
-import { DemoScenario, Department, Lab, LearningMaterial, Resource, User, AccessRequest, Booking } from './types.js';
+import { DemoScenario, Department, Lab, LearningMaterial, Resource, User, AccessRequest, Booking, Project } from './types.js';
 import { DEMO_SCENARIO_VERSION } from './constants.js';
 
 function formatDate(d: Date): string {
@@ -44,6 +44,13 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
       code: 'MECH',
       building: 'Tesla Workshops, Ground Floor',
       contactEmail: 'mech-labs@campus.edu'
+    },
+    {
+      id: 'dept_bio',
+      name: 'Bio-Engineering & Analytical Chemistry',
+      code: 'BIO',
+      building: 'Pasteur Hall, 2nd Floor',
+      contactEmail: 'bio-labs@campus.edu'
     }
   ];
 
@@ -59,6 +66,19 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
       safetyRules: [
         'Safety goggles mandatory near spinning rotors or mechanical drives',
         'LiPo battery charging strictly restricted to certified fireproof stations'
+      ]
+    },
+    {
+      id: 'lab_bio_chem',
+      departmentId: 'dept_bio',
+      name: 'Bio-Molecular Spectroscopy & Analytical Lab',
+      roomNumber: 'Pasteur Hall 201',
+      operatingHours: { open: '08:00', close: '20:00' },
+      coordinatorName: 'Dr. Elena Rostova',
+      description: 'UV-Vis double-beam spectrophotometers, biochip microfluidics, and HPLC analytical benches.',
+      safetyRules: [
+        'Nitrile gloves, lab coat, and chemical safety goggles mandatory at all wet benches',
+        'Emergency eye wash station must remain unobstructed; dispose organic solvents in labeled EHS containers'
       ]
     },
     {
@@ -162,6 +182,20 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
       topic: 'Deep Learning & Compute Optimization',
       description: 'Recorded laboratory seminar on PyTorch Distributed Data Parallel (DDP), gradient checkpointing, and thermal throttling mitigations.',
       source: 'Dr. Aris Thorne — CSE High Performance AI Seminar',
+      url: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
+      verified: true,
+      isDemo: true
+    },
+    {
+      id: 'mat_uv_spectro_video',
+      title: 'UV-Vis Spectrophotometer Operation & Cuvette Handling Demonstration',
+      type: 'video-reference',
+      labId: 'lab_bio_chem',
+      resourceId: 'res_shimadzu_uv_01',
+      topic: 'Biomolecular Analytics & Optical Spectroscopy',
+      description: 'Step-by-step demonstration covering baseline calibration, quartz cuvette orientation, and optical absorbance linearity checks.',
+      source: 'Dr. Elena Rostova — Bio-Molecular Spectroscopy Demonstration',
+      url: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
       verified: true,
       isDemo: true
     },
@@ -341,6 +375,38 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
       operatingHours: { open: '08:00', close: '20:00' },
       status: 'available',
       specs: { Nodes: '8x RPi5 8GB', Network: 'Gigabit PoE Switch', Storage: '1TB NVMe' }
+    },
+    {
+      id: 'res_shimadzu_uv_01',
+      name: 'Shimadzu UV-2600i Double-Beam UV-Vis Spectrometer',
+      departmentId: 'dept_bio',
+      labId: 'lab_bio_chem',
+      category: 'instrumentation',
+      capabilityTags: ['signal-measurement', 'power-analysis'],
+      location: 'Pasteur Hall - Molecular Spectroscopy 201',
+      description: 'High-precision double-beam optical absorption spectrophotometer for nucleic acid, protein, and nanomaterial assays.',
+      requiresCertification: [],
+      maxSessionMinutes: 120,
+      bufferMinutes: 15,
+      operatingHours: { open: '08:00', close: '20:00' },
+      status: 'available',
+      specs: { Wavelength: '185 to 900 nm', PhotometricRange: '-5 to 5 Abs', SpectralBandwidth: '0.1 to 5 nm' }
+    },
+    {
+      id: 'res_agilent_hplc_01',
+      name: 'Agilent 1260 Infinity II HPLC Analytical System',
+      departmentId: 'dept_bio',
+      labId: 'lab_bio_chem',
+      category: 'instrumentation',
+      capabilityTags: ['power-analysis', 'signal-measurement'],
+      location: 'Pasteur Hall - Chromatography Bay 203',
+      description: 'Quaternary analytical chromatography system for biomolecule purification and peptide purity quantification.',
+      requiresCertification: ['SAFETY_MECH_L1'],
+      maxSessionMinutes: 180,
+      bufferMinutes: 30,
+      operatingHours: { open: '08:00', close: '20:00' },
+      status: 'available',
+      specs: { Pressure: 'Up to 600 bar', FlowRate: '0.001 to 10 mL/min', Detector: 'Diode Array DAD' }
     }
   ];
 
@@ -477,6 +543,59 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
     }
   ];
 
+  const projects: Project[] = [
+    {
+      id: 'proj_drone_capstone',
+      ownerId: 'user_alex',
+      advisorId: 'user_radhika',
+      title: 'Autonomous Drone Obstacle Avoidance (Capstone Final)',
+      description: 'Edge-AI neural perception running on NVIDIA Jetson Orin with sub-50ms obstacle avoidance loop.',
+      type: 'capstone',
+      deadline: `${day3Str}T17:00:00.000Z`,
+      createdAt: `${todayStr}T08:00:00.000Z`
+    },
+    {
+      id: 'proj_cdc_verification',
+      ownerId: 'user_marcus',
+      advisorId: 'user_radhika',
+      title: 'FPGA Clock Domain Crossing & Multi-Cycle Timing Sign-off',
+      description: 'Sub-nanosecond timing margin validation using 16-channel logic analyzer and Xilinx UltraScale+ MPSoC.',
+      type: 'research',
+      deadline: `${day7Str}T18:00:00.000Z`,
+      createdAt: `${todayStr}T08:30:00.000Z`
+    },
+    {
+      id: 'proj_thermal_vision',
+      ownerId: 'user_priya',
+      advisorId: 'user_radhika',
+      title: 'Multi-Modal Thermal & Optical Fusion Model',
+      description: 'Thermal camera synchronization and battery pack dissipation profiling during high-rate discharge.',
+      type: 'research',
+      deadline: `${day7Str}T17:00:00.000Z`,
+      createdAt: `${todayStr}T09:00:00.000Z`
+    },
+    {
+      id: 'proj_intro_robotics',
+      ownerId: 'user_jordan',
+      advisorId: 'user_radhika',
+      title: 'Introductory Robotics Lab Exercise 4',
+      description: 'Coursework practice on ROS2 node communication and OpenCV edge filtering for autonomous ground rovers.',
+      type: 'coursework',
+      deadline: `${day18Str}T23:59:00.000Z`,
+      createdAt: `${todayStr}T10:00:00.000Z`
+    },
+    {
+      id: 'proj_protein_kinetics',
+      ownerId: 'user_alex',
+      advisorId: 'user_radhika',
+      title: 'Biomolecular Photopolymer Resin Degradation Assay',
+      description: 'UV-Vis spectrophotometric absorbance tracking of biocompatible resin degradation in saline solvents.',
+      type: 'research',
+      deadline: `${day18Str}T16:00:00.000Z`,
+      createdAt: `${todayStr}T11:00:00.000Z`
+    }
+  ];
+
   // Pre-existing confirmed bookings
   const bookings: Booking[] = [
     {
@@ -498,6 +617,7 @@ export function createSeedScenario(baseDate: Date = new Date()): DemoScenario {
     departments,
     labs,
     resources,
+    projects,
     requests,
     bookings,
     materials,

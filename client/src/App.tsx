@@ -16,6 +16,7 @@ import { BookingsPage } from './pages/BookingsPage.js';
 import { KnowledgePage } from './pages/KnowledgePage.js';
 import { InsightsPage } from './pages/InsightsPage.js';
 import { SettingsPage } from './pages/SettingsPage.js';
+import { MyLabPage } from './pages/MyLabPage.js';
 
 function ScrollToTopAndFocus() {
   const { pathname } = useLocation();
@@ -89,6 +90,7 @@ export default function App() {
             <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6" id="main-content">
               <Routes>
                 <Route path="/" element={<HomePage />} />
+                <Route path="/mylab" element={<MyLabPage />} />
                 <Route path="/discover" element={<DiscoverPage />} />
                 <Route path="/request" element={<RequestPage />} />
                 <Route path="/conflicts" element={<ConflictCenterPage />} />

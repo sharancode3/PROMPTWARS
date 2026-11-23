@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useScenario } from '../context/ScenarioContext.js';
 import { LearningMaterial } from 'shared';
+import { VideoModal } from '../components/common/VideoModal.js';
 
 export function KnowledgePage() {
   const { scenario } = useScenario();
@@ -12,6 +13,7 @@ export function KnowledgePage() {
   const [selectedLab, setSelectedLab] = useState<string>(initialLabFilter);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeMaterial, setActiveMaterial] = useState<LearningMaterial | null>(null);
+  const [activeVideoMaterial, setActiveVideoMaterial] = useState<LearningMaterial | null>(null);
 
   // Lab Context-Aware Assistant State
   const [selectedPresetQ, setSelectedPresetQ] = useState<number | null>(0);
@@ -341,10 +343,27 @@ export function KnowledgePage() {
                 </span>
                 <button
                   type="button"
-                  onClick={() => setActiveMaterial(mat)}
-                  className="px-2.5 py-1 border border-rule hover:border-ink bg-paper text-ink transition-colors font-semibold"
+                  onClick={() => {
+                    if (mat.type === 'video-reference') {
+                      setActiveVideoMaterial(mat);
+                    } else {
+                      setActiveMaterial(mat);
+                    }
+                  }}
+                  className={`px-2.5 py-1 border transition-colors font-semibold flex items-center space-x-1 ${
+                    mat.type === 'video-reference'
+                      ? 'border-signal bg-signal text-white hover:bg-signal/90'
+                      : 'border-rule hover:border-ink bg-paper text-ink'
+                  }`}
                 >
-                  Read SOP →
+                  {mat.type === 'video-reference' ? (
+                    <>
+                      <span>Watch Video</span>
+                      <span>▷</span>
+                    </>
+                  ) : (
+                    <span>Read SOP →</span>
+                  )}
                 </button>
               </div>
             </div>
@@ -432,6 +451,14 @@ export function KnowledgePage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Video Modal Player with Fullscreen Option */}
+      {activeVideoMaterial && (
+        <VideoModal
+          material={activeVideoMaterial}
+          onClose={() => setActiveVideoMaterial(null)}
+        />
       )}
     </div>
   );

@@ -167,6 +167,9 @@ flowchart TB
 | **"Lifecycle Milestone Stepper Tracker"** | 4-stage tracking (Drafted → Submitted → Evaluation → Final Allocation) with next actions | [`client/src/pages/RequestPage.tsx`](client/src/pages/RequestPage.tsx) | `client/test/app.test.tsx` |
 | **"Zero-Dependency SVG Analytics"** | Pure SVG weekly load area curves and 74.2% institutional fairness donut gauge | [`client/src/pages/InsightsPage.tsx`](client/src/pages/InsightsPage.tsx) | `client/test/app.test.tsx` |
 | **"Lab Context-Aware Assistant"** | Grounded diagnostic assistance for EHS safety, ESD protection, and equipment limits | [`client/src/pages/KnowledgePage.tsx`](client/src/pages/KnowledgePage.tsx) | `client/test/app.test.tsx` |
+| **"My Lab Student Workspace"** | 5-in-1 suite: Projects & Bundles, Compare Hardware, Sessions Lifecycle, Offline Pocket Card, and Lab Guide | [`client/src/pages/MyLabPage.tsx`](client/src/pages/MyLabPage.tsx) | `client/test/app.test.tsx` |
+| **"SOP Video Demonstrations"** | Embedded YouTube video player modal with fullscreen toggle and procedural timeline checkpoints | [`client/src/components/common/VideoModal.tsx`](client/src/components/common/VideoModal.tsx) | `client/test/app.test.tsx` |
+| **"Bio-Engineering & Analytics Facilities"** | Added Bio-Molecular Spectroscopy Lab, UV-Vis Spectrometer, HPLC, and biochemical safety SOPs | [`shared/src/seed.ts`](shared/src/seed.ts) | `shared/test/seed.test.ts`<br>`server/test/api.test.ts` |
 
 ---
 

@@ -176,6 +176,14 @@ export const AllocationProposalSchema = z.object({
   aiAssisted: z.boolean().default(false)
 });
 
+export const SessionFeedbackSchema = z.object({
+  condition: z.enum(['operational', 'needs-cleaning', 'calibration-drift', 'hardware-issue']),
+  rating: z.number().min(1).max(5),
+  issueTags: z.array(z.string()).default([]),
+  comment: z.string().max(500).optional(),
+  submittedAt: z.string().datetime()
+});
+
 export const BookingSchema = z.object({
   id: z.string(),
   resourceId: z.string(),
@@ -186,7 +194,8 @@ export const BookingSchema = z.object({
   startTime: z.string().regex(/^\d{2}:\d{2}$/),
   endTime: z.string().regex(/^\d{2}:\d{2}$/),
   status: BookingStatusSchema.default('confirmed'),
-  checkedInAt: z.string().datetime().optional()
+  checkedInAt: z.string().datetime().optional(),
+  feedback: SessionFeedbackSchema.optional()
 });
 
 export const ApprovalDecisionSchema = z.object({

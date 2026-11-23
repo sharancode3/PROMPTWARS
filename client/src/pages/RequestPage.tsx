@@ -339,9 +339,15 @@ export function RequestPage() {
                 type="button"
                 onClick={handleAiMatch}
                 disabled={aiLoading}
-                className="bg-cobalt text-white px-4 py-2 font-mono text-xs uppercase font-semibold hover:opacity-90 disabled:opacity-50 shrink-0"
+                className="bg-cobalt text-white px-4 py-2 font-mono text-xs uppercase font-semibold hover:opacity-90 disabled:opacity-50 shrink-0 inline-flex items-center space-x-1.5"
               >
-                {aiLoading ? 'Matching...' : 'Auto-Draft &rarr;'}
+                <span>{aiLoading ? 'Matching...' : 'Auto-Draft'}</span>
+                {!aiLoading && (
+                  <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                    <line x1="2" y1="8" x2="14" y2="8" />
+                    <polyline points="9 3 14 8 9 13" />
+                  </svg>
+                )}
               </button>
             </div>
           </div>
@@ -507,16 +513,21 @@ export function RequestPage() {
               <button
                 type="button"
                 onClick={() => navigate('/discover')}
-                className="text-xs font-mono text-ink-3 hover:text-ink"
+                className="text-xs font-mono text-ink-3 hover:text-ink inline-flex items-center space-x-1"
               >
-                &larr; Back to Catalog
+                <span aria-hidden="true">&larr;</span>
+                <span>Back to Catalog</span>
               </button>
 
               <button
                 type="submit"
-                className="bg-signal hover:opacity-90 text-white px-6 py-3 font-mono text-xs font-bold uppercase transition-opacity"
+                className="bg-signal hover:opacity-90 text-white px-6 py-3 font-mono text-xs font-bold uppercase transition-opacity inline-flex items-center space-x-2"
               >
-                Submit Access Request &rarr;
+                <span>Submit Access Request</span>
+                <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  <line x1="2" y1="8" x2="14" y2="8" />
+                  <polyline points="9 3 14 8 9 13" />
+                </svg>
               </button>
             </div>
           </form>

@@ -32,7 +32,7 @@ export function LabsPage() {
             University Laboratories
           </h1>
           <p className="text-sm text-ink-2 mt-1 max-w-2xl">
-            Explore inter-departmental laboratory facilities, certified instrumentation benches, operating protocols, and verified safety SOPs.
+            Explore inter-departmental laboratory facilities, research benches, operating hours, and illustrative safety reference guidelines. Consult facility coordinators for authoritative safety procedures.
           </p>
         </div>
 
@@ -44,6 +44,11 @@ export function LabsPage() {
             {scenario.resources.length} Specialised Devices
           </span>
         </div>
+      </div>
+
+      {/* Illustrative Notice & Grounding Disclaimer */}
+      <div className="bg-tint/40 border-l-2 border-rule p-3 font-mono text-xs text-ink-2">
+        <strong className="text-ink">Safety &amp; Compliance Notice:</strong> Laboratory safety notes, room assignments, and equipment listings are department-sourced reference materials for student orientation. In case of emergency or high-risk chemical/hardware operations, follow the direct instructions of the assigned Faculty Coordinator.
       </div>
 
       {/* Filter and Search Controls */}

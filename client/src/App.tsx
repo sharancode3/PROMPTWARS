@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { ScenarioProvider } from './context/ScenarioContext.js';
 import { Sidebar } from './components/common/Sidebar.js';
 import { Header } from './components/common/Header.js';
@@ -16,6 +16,31 @@ import { BookingsPage } from './pages/BookingsPage.js';
 import { KnowledgePage } from './pages/KnowledgePage.js';
 import { InsightsPage } from './pages/InsightsPage.js';
 import { SettingsPage } from './pages/SettingsPage.js';
+
+function ScrollToTopAndFocus() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+        window.scrollTo(0, 0);
+      }
+    } catch {
+      // Environment without DOM scroll implementation
+    }
+    // Find page h1 and set focus for accessibility unless a modal is open
+    const isModalOpen = document.querySelector('[role="dialog"]');
+    if (!isModalOpen) {
+      const heading = document.querySelector('h1');
+      if (heading) {
+        heading.setAttribute('tabindex', '-1');
+        heading.focus({ preventScroll: true });
+      }
+    }
+  }, [pathname]);
+
+  return null;
+}
 
 export default function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
@@ -34,6 +59,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <ScrollToTopAndFocus />
       <ScenarioProvider>
         <div className="min-h-screen bg-paper text-ink transition-colors duration-150 flex flex-col justify-between">
           {/* Skip Link for Accessibility */}

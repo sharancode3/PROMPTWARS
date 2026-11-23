@@ -344,15 +344,17 @@ export function DiscoverPage() {
                 <button
                   type="button"
                   onClick={() => setFocusedResource(res)}
-                  className="text-ink hover:text-signal underline font-semibold focus-visible:outline-none text-[11px]"
+                  className="text-ink hover:text-signal underline font-semibold focus-visible:outline-none text-[11px] inline-flex items-center space-x-1"
                 >
-                  Inspect Feasible Slots &rarr;
+                  <span>Inspect Feasible Slots</span>
+                  <span aria-hidden="true">&rarr;</span>
                 </button>
                 <button
                   onClick={() => navigate(`/request?resourceId=${res.id}`)}
-                  className="bg-ink hover:bg-signal text-paper px-3.5 py-1.5 text-xs font-semibold uppercase transition-colors"
+                  className="bg-ink hover:bg-signal text-paper px-3.5 py-1.5 text-xs font-semibold uppercase transition-colors inline-flex items-center space-x-1"
                 >
-                  Request Slot &rarr;
+                  <span>Request Slot</span>
+                  <span aria-hidden="true">&rarr;</span>
                 </button>
               </div>
             </div>
@@ -436,9 +438,10 @@ export function DiscoverPage() {
                               `/request?resourceId=${focusedResource.id}&date=${slot.date}&startTime=${slot.startTime}&endTime=${slot.endTime}`
                             );
                           }}
-                          className="w-full mt-2 bg-ink text-paper hover:bg-signal px-2.5 py-1.5 uppercase font-semibold text-[11px] transition-colors"
+                          className="w-full mt-2 bg-ink text-paper hover:bg-signal px-2.5 py-1.5 uppercase font-semibold text-[11px] transition-colors inline-flex items-center justify-center space-x-1"
                         >
-                          Select Slot &rarr;
+                          <span>Select Slot</span>
+                          <span aria-hidden="true">&rarr;</span>
                         </button>
                       ) : (
                         <span className="text-[10px] text-ink-3 mt-2 block">

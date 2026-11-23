@@ -16,6 +16,7 @@ import {
   PriorityBreakdownSchema,
   AlternativeSlotSchema,
   AllocationProposalSchema,
+  SessionFeedbackSchema,
   BookingSchema,
   ApprovalDecisionSchema,
   NLSearchInterpretRequestSchema,
@@ -39,6 +40,7 @@ export type ScoreBreakdown = z.infer<typeof ScoreBreakdownSchema>;
 export type PriorityBreakdown = z.infer<typeof PriorityBreakdownSchema>;
 export type AlternativeSlot = z.infer<typeof AlternativeSlotSchema>;
 export type AllocationProposal = z.infer<typeof AllocationProposalSchema>;
+export type SessionFeedback = z.infer<typeof SessionFeedbackSchema>;
 export type Booking = z.infer<typeof BookingSchema>;
 export type ApprovalDecision = z.infer<typeof ApprovalDecisionSchema>;
 export type NLSearchInterpretRequest = z.infer<typeof NLSearchInterpretRequestSchema>;

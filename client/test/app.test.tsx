@@ -1,9 +1,12 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import App from '../src/App.js';
 
 describe('App Root Component & Navigation', () => {
+  beforeEach(() => {
+    window.scrollTo = vi.fn();
+  });
   it('renders LabLink brand and tagline', () => {
     render(<App />);
     expect(screen.getByText('LabLink')).toBeDefined();

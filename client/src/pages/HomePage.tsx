@@ -10,6 +10,7 @@ export function HomePage() {
   const totalDepartments = scenario.departments.length;
   const totalBookings = scenario.bookings.length;
   const pendingRequests = scenario.requests.filter((r) => r.status === 'submitted' || r.status === 'under-review').length;
+  const totalLabs = (scenario.labs || []).length;
 
   return (
     <div className="space-y-12">
@@ -38,14 +39,20 @@ export function HomePage() {
               className="bg-signal text-white font-semibold px-6 py-3.5 border border-signal hover:opacity-95 flex items-center space-x-2 transition-all shadow-sm"
             >
               <span>Run the conflict demo</span>
-              <span aria-hidden="true">&rarr;</span>
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <line x1="2" y1="8" x2="14" y2="8" />
+                <polyline points="9 3 14 8 9 13" />
+              </svg>
             </button>
             <button
               onClick={() => navigate('/discover')}
               className="bg-transparent text-ink font-semibold px-6 py-3.5 border border-rule hover:bg-tint flex items-center space-x-2 transition-colors"
             >
               <span>Discover equipment</span>
-              <span aria-hidden="true">&rarr;</span>
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <line x1="2" y1="8" x2="14" y2="8" />
+                <polyline points="9 3 14 8 9 13" />
+              </svg>
             </button>
           </div>
 
@@ -63,12 +70,12 @@ export function HomePage() {
         <div className="p-6">
           <span className="text-xs uppercase font-mono tracking-wider text-ink-3">Equipment Listed</span>
           <div className="text-3xl font-bold font-mono mt-1 text-ink">{totalEquipment} Units</div>
-          <span className="text-[11px] text-ink-3 font-mono mt-1 block">3 Specialized Labs</span>
+          <span className="text-[11px] text-ink-3 font-mono mt-1 block">{totalLabs} Registered Laboratories</span>
         </div>
         <div className="p-6">
           <span className="text-xs uppercase font-mono tracking-wider text-ink-3">Academic Faculties</span>
           <div className="text-3xl font-bold font-mono mt-1 text-ink">{totalDepartments} Depts</div>
-          <span className="text-[11px] text-ink-3 font-mono mt-1 block">ECE, CSE, Mech</span>
+          <span className="text-[11px] text-ink-3 font-mono mt-1 block">{scenario.departments.map(d => d.code).join(', ')}</span>
         </div>
         <div className="p-6">
           <span className="text-xs uppercase font-mono tracking-wider text-ink-3">Confirmed Bookings</span>
@@ -172,9 +179,9 @@ export function HomePage() {
             onClick={() => navigate('/timetable')}
             className="p-5 border border-rule hover:border-ink cursor-pointer transition-colors bg-paper space-y-2 group"
           >
-            <div className="text-xs font-mono text-signal uppercase font-semibold">06 SCHEDULE</div>
+            <div className="text-xs font-mono text-signal uppercase font-semibold">SCHEDULE • TIMETABLE</div>
             <h3 className="font-bold text-base text-ink group-hover:text-signal transition-colors">
-              Weekly Timetable
+              Campus Lab Timetable
             </h3>
             <p className="text-xs text-ink-2 leading-relaxed">
               Track open walk-in benches, scheduled capstone blocks, and departmental priority hours Mon–Sat.
@@ -185,25 +192,25 @@ export function HomePage() {
             onClick={() => navigate('/labs')}
             className="p-5 border border-rule hover:border-ink cursor-pointer transition-colors bg-paper space-y-2 group"
           >
-            <div className="text-xs font-mono text-signal uppercase font-semibold">07 LABS</div>
+            <div className="text-xs font-mono text-signal uppercase font-semibold">06 LABS</div>
             <h3 className="font-bold text-base text-ink group-hover:text-signal transition-colors">
               University Labs Directory
             </h3>
             <p className="text-xs text-ink-2 leading-relaxed">
-              Browse 5 university research laboratories, room locations, coordinators, and verified safety rules.
+              Browse {totalLabs} research laboratories, room locations, coordinators, and facility guidelines.
             </p>
           </div>
 
           <div
-            onClick={() => navigate('/knowledge')}
+            onClick={() => navigate('/bookings')}
             className="p-5 border border-rule hover:border-ink cursor-pointer transition-colors bg-paper space-y-2 group"
           >
-            <div className="text-xs font-mono text-signal uppercase font-semibold">09 KNOWLEDGE</div>
+            <div className="text-xs font-mono text-signal uppercase font-semibold">07 BOOKINGS</div>
             <h3 className="font-bold text-base text-ink group-hover:text-signal transition-colors">
-              Knowledge & SOPs
+              Active Bookings &amp; Check-In
             </h3>
             <p className="text-xs text-ink-2 leading-relaxed">
-              Standard operating procedures, chemical safety standards, and high-speed instrumentation notes.
+              Live schedule audit trail, check-in window validation, and waitlist promotion.
             </p>
           </div>
 
@@ -211,12 +218,12 @@ export function HomePage() {
             onClick={() => navigate('/insights')}
             className="p-5 border border-rule hover:border-ink cursor-pointer transition-colors bg-paper space-y-2 group"
           >
-            <div className="text-xs font-mono text-signal uppercase font-semibold">10 INSIGHTS</div>
+            <div className="text-xs font-mono text-signal uppercase font-semibold">09 INSIGHTS</div>
             <h3 className="font-bold text-base text-ink group-hover:text-signal transition-colors">
               Utilisation Telemetry
             </h3>
             <p className="text-xs text-ink-2 leading-relaxed">
-              Cross-department load tracking, idle bench rebalancing, and automated no-show slot recovery.
+              Cross-department load tracking, idle bench rebalancing, and data-derived capacity analytics.
             </p>
           </div>
         </div>

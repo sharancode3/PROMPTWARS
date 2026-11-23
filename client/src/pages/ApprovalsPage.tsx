@@ -4,7 +4,7 @@ import { StatusGlyph } from '../components/common/StatusGlyph.js';
 import { AccessRequest, Booking } from 'shared';
 
 export function ApprovalsPage() {
-  const { scenario, currentUser, decideApproval, setToast } = useScenario();
+  const { scenario, role, setRole, currentUser, decideApproval, setToast } = useScenario();
 
   const [rejectingId, setRejectingId] = useState<string | null>(null);
   const [rejectReason, setRejectReason] = useState('Capstone project schedule adjusted; slot deferred to next week.');
@@ -49,11 +49,43 @@ export function ApprovalsPage() {
         </div>
 
         <div className="font-mono text-xs border border-rule-soft bg-tint px-3 py-1.5 text-ink-2">
-          <span>Advisor: </span>
-          <strong className="text-ink">{currentUser.name}</strong>
-          <span className="text-ink-3"> ({currentUser.departmentName})</span>
+          {role === 'student' ? (
+            <>
+              <span>Viewer Role: </span>
+              <strong className="text-ink">{currentUser.name} (Student)</strong>
+              <span className="text-signal ml-2">[Read-Only Queue]</span>
+            </>
+          ) : (
+            <>
+              <span>Authorized Reviewer: </span>
+              <strong className="text-ink">{currentUser.name}</strong>
+              <span className="text-ink-3"> ({currentUser.departmentName || 'Campus Administration'})</span>
+            </>
+          )}
         </div>
       </div>
+
+      {/* Student Role Warning Banner */}
+      {role === 'student' && (
+        <div className="border border-signal/60 bg-signal/5 p-4 font-mono text-xs space-y-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-1">
+            <div className="flex items-center space-x-2 text-signal font-bold">
+              <span className="w-2 h-2 bg-signal" aria-hidden="true" />
+              <span className="uppercase">STUDENT VIEW • APPROVAL ACTIONS RESTRICTED</span>
+            </div>
+            <p className="text-ink-2 font-sans text-xs">
+              You are signed in as <strong>{currentUser.name} (Student)</strong>. Faculty review, prerequisite sign-offs, and allocation decisions require Faculty Advisor or Administrator authorization.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setRole('faculty')}
+            className="bg-signal text-white px-4 py-2 font-mono text-xs font-bold uppercase hover:opacity-90 transition-opacity whitespace-nowrap self-start sm:self-center"
+          >
+            Switch to Faculty Persona &rarr;
+          </button>
+        </div>
+      )}
 
       {/* Pending Requests List */}
       <div className="space-y-6">
@@ -154,21 +186,35 @@ export function ApprovalsPage() {
                         </button>
                       </div>
                     </div>
+                  ) : role === 'student' ? (
+                    <div className="pt-2 border-t border-rule-soft flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
+                      <span className="text-signal font-semibold">Faculty Authorization Required to Authorize Slot</span>
+                      <button
+                        type="button"
+                        onClick={() => setRole('faculty')}
+                        className="px-4 py-2 bg-ink text-paper hover:bg-signal font-bold uppercase transition-colors inline-flex items-center space-x-1.5"
+                      >
+                        <span>Switch to Faculty Persona &rarr;</span>
+                      </button>
+                    </div>
                   ) : (
                     <div className="pt-2 border-t border-rule-soft flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
                       <span className="text-ink-3">Action Required by Faculty Advisor</span>
                       <div className="flex items-center space-x-2">
                         <button
+                          type="button"
                           onClick={() => setRejectingId(req.id)}
                           className="px-4 py-2 border border-rule text-ink hover:bg-tint font-semibold"
                         >
                           Reject with Note
                         </button>
                         <button
+                          type="button"
                           onClick={() => handleApprove(req)}
-                          className="px-6 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold uppercase transition-colors"
+                          className="px-6 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold uppercase transition-colors inline-flex items-center space-x-1.5"
                         >
-                          Approve Slot &rarr;
+                          <span>Approve Slot</span>
+                          <span aria-hidden="true">&rarr;</span>
                         </button>
                       </div>
                     </div>

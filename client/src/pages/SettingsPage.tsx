@@ -49,7 +49,7 @@ export function SettingsPage() {
       {/* Section 1: Evaluator State Management */}
       <div className="border border-rule bg-paper p-5 space-y-4">
         <div className="border-b border-rule-soft pb-3">
-          <h2 className="text-base font-bold text-ink">Scenario State & Reset</h2>
+          <h2 className="text-base font-bold text-ink">Scenario State &amp; Reset</h2>
           <p className="text-xs text-ink-2 font-mono mt-0.5">
             Reset all synthetic bookings, requests, and arbitration proposals to the initial benchmark dataset.
           </p>
@@ -71,6 +71,17 @@ export function SettingsPage() {
             Reset Seed Data Baseline
           </button>
         </div>
+      </div>
+
+      {/* Demonstration Data Disclosure */}
+      <div className="border border-rule bg-tint/30 p-4 space-y-2 font-mono text-xs">
+        <div className="flex items-center space-x-2 text-ink font-bold">
+          <span className="w-2 h-2 bg-signal" aria-hidden="true" />
+          <h3 className="uppercase text-xs">Demonstration Data Disclosure</h3>
+        </div>
+        <p className="text-ink-2 font-sans text-xs leading-relaxed">
+          All campus equipment records, lab operating hours, safety notes, student profiles, and reservations in LabLink are synthetic illustrative models created for hackathon evaluation. They simulate real-world university resource sharing but do not constitute official university certifications or live legal safety approvals.
+        </p>
       </div>
 
       {/* Section 2: Demo Role Switcher */}

@@ -25,213 +25,144 @@ export function TimetablePage() {
   const { scenario } = useScenario();
 
   // Current calendar month view: November 2026
-  const [currentYear] = useState(2026);
-  const [currentMonth] = useState(10); // 0-indexed: 10 = November
   const [selectedDayNumber, setSelectedDayNumber] = useState<number>(24); // Default: Nov 24
   const [filterLab, setFilterLab] = useState<string>('all');
-  const [viewMode, setViewMode] = useState<'calendar' | 'matrix'>('calendar');
+  const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [viewMode, setViewMode] = useState<'month' | 'day' | 'agenda'>('month');
 
   // Days in November 2026: 30 days. Nov 1, 2026 was a Sunday (0).
   const monthName = 'November 2026';
   const totalDays = 30;
   const startDayOfWeek = 0; // Sunday
 
-  // Seeded calendar schedule items distributed across the month
+  // Derive schedule items from canonical bookings + feasible slots
   const allScheduleItems: DailyScheduleItem[] = useMemo(() => {
     const items: DailyScheduleItem[] = [];
 
-    // Recurring distribution generator across November 2026
+    // 1. Ingest all scenario bookings (Ground Truth)
+    (scenario.bookings || []).forEach((b) => {
+      const res = scenario.resources.find((r) => r.id === b.resourceId);
+      const lab = (scenario.labs || []).find((l) => l.id === res?.labId);
+      const d = new Date(b.date);
+      const dayOfWeek = d.toLocaleDateString('en-US', { weekday: 'short' });
+
+      items.push({
+        id: `book_${b.id}`,
+        dateStr: b.date,
+        dayOfWeek,
+        startTime: b.startTime,
+        endTime: b.endTime,
+        labId: lab?.id || res?.labId || 'lab_general',
+        labName: lab?.name || 'Central Instrumentation Facility',
+        roomNumber: lab?.roomNumber || res?.location || 'Campus Lab',
+        resourceId: b.resourceId,
+        resourceName: res?.name || b.resourceId,
+        category: res?.category || 'compute',
+        projectTitle: b.studentName ? `${b.studentName} — Confirmed Slot` : 'Reserved Session',
+        status: 'confirmed',
+        departmentCode: res?.departmentId.replace('dept_', '').toUpperCase() || 'ENG',
+        studentName: b.studentName
+      });
+    });
+
+    // 2. Derive feasible open walk-in slots for weekdays
     for (let day = 1; day <= totalDays; day++) {
       const dayPad = String(day).padStart(2, '0');
       const dateStr = `2026-11-${dayPad}`;
       const d = new Date(2026, 10, day);
       const dayOfWeek = d.toLocaleDateString('en-US', { weekday: 'short' });
 
-      // Skip Sundays (labs closed)
+      // Sundays closed
       if (d.getDay() === 0) continue;
 
-      // Monday/Wednesday/Friday pattern
-      if (d.getDay() === 1 || d.getDay() === 3 || d.getDay() === 5) {
-        items.push({
-          id: `item_${day}_1`,
-          dateStr,
-          dayOfWeek,
-          startTime: '08:30',
-          endTime: '11:30',
-          labId: 'lab_cse_ml',
-          labName: 'Machine Learning & HPC Cluster Lab',
-          roomNumber: 'Turing 308',
-          resourceId: 'res_rtx4090_rig_01',
-          resourceName: 'NVIDIA RTX 4090 Deep Learning Rig',
-          category: 'compute',
-          projectTitle: 'Large Vision Model Fine-Tuning & Quantization',
-          status: 'confirmed',
-          departmentCode: 'CSE',
-          studentName: 'Aarav Mehta'
-        });
+      // For key campus equipment, check if an open slot exists that doesn't overlap bookings
+      scenario.resources.forEach((res) => {
+        const bookingsOnDate = items.filter(
+          (item) => item.dateStr === dateStr && item.resourceId === res.id && item.status === 'confirmed'
+        );
 
-        items.push({
-          id: `item_${day}_2`,
-          dateStr,
-          dayOfWeek,
-          startTime: '12:00',
-          endTime: '15:00',
-          labId: 'lab_mech_auto',
-          labName: 'Autonomous Systems & Robotics Lab',
-          roomNumber: 'Tesla 102',
-          resourceId: 'res_jetson_orin_01',
-          resourceName: 'NVIDIA Jetson AGX Orin 64GB',
-          category: 'compute',
-          projectTitle: 'Open Walk-in Bench • Edge AI Diagnostics',
-          status: 'open',
-          departmentCode: 'MECH'
-        });
+        // Candidate time slots within operating hours (08:00 - 20:00)
+        const candidateSlots = [
+          { start: '09:00', end: '12:00' },
+          { start: '13:00', end: '16:00' },
+          { start: '16:30', end: '19:30' }
+        ];
 
-        items.push({
-          id: `item_${day}_3`,
-          dateStr,
-          dayOfWeek,
-          startTime: '15:30',
-          endTime: '18:30',
-          labId: 'lab_ece_digital',
-          labName: 'Digital Systems & VLSI Testing Lab',
-          roomNumber: 'Maxwell 204',
-          resourceId: 'res_keysight_la_01',
-          resourceName: 'Keysight 16-Ch 500MHz Logic Analyzer',
-          category: 'instrumentation',
-          projectTitle: 'High-Speed Logic State Capture & Clock Skew',
-          status: 'confirmed',
-          departmentCode: 'ECE',
-          studentName: 'Marcus Chen'
-        });
-      }
+        candidateSlots.forEach((slot, sIdx) => {
+          const overlaps = bookingsOnDate.some(
+            (b) => !(slot.end <= b.startTime || slot.start >= b.endTime)
+          );
 
-      // Tuesday/Thursday pattern (Capstone Contested Days)
-      if (d.getDay() === 2 || d.getDay() === 4) {
-        items.push({
-          id: `item_${day}_1`,
-          dateStr,
-          dayOfWeek,
-          startTime: '09:00',
-          endTime: '12:00',
-          labId: 'lab_ece_digital',
-          labName: 'Digital Systems & VLSI Testing Lab',
-          roomNumber: 'Maxwell 204',
-          resourceId: 'res_zynq_fpga_01',
-          resourceName: 'Xilinx Zynq UltraScale+ Dev Board',
-          category: 'embedded',
-          projectTitle: 'FPGA Accelerator RTL Synthesis',
-          status: 'confirmed',
-          departmentCode: 'ECE',
-          studentName: 'Priya Patel'
+          if (!overlaps) {
+            // Only add a few feasible open slots per day to keep timetable realistic and uncluttered
+            const shouldAdd = (day + sIdx + res.id.length) % 3 === 0;
+            if (shouldAdd) {
+              const lab = (scenario.labs || []).find((l) => l.id === res.labId);
+              items.push({
+                id: `open_${day}_${res.id}_${sIdx}`,
+                dateStr,
+                dayOfWeek,
+                startTime: slot.start,
+                endTime: slot.end,
+                labId: lab?.id || res.labId || 'lab_general',
+                labName: lab?.name || 'Central Instrumentation',
+                roomNumber: lab?.roomNumber || res.location,
+                resourceId: res.id,
+                resourceName: res.name,
+                category: res.category,
+                projectTitle: `Open Bench Window • Walk-In Feasible (${res.category.toUpperCase()})`,
+                status: 'open',
+                departmentCode: res.departmentId.replace('dept_', '').toUpperCase()
+              });
+            }
+          }
         });
-
-        items.push({
-          id: `item_${day}_2`,
-          dateStr,
-          dayOfWeek,
-          startTime: '13:00',
-          endTime: '16:00',
-          labId: 'lab_mech_auto',
-          labName: 'Autonomous Systems & Robotics Lab',
-          roomNumber: 'Tesla 102',
-          resourceId: 'res_jetson_orin_01',
-          resourceName: 'NVIDIA Jetson AGX Orin 64GB',
-          category: 'compute',
-          projectTitle: 'Autonomous UAV Obstacle Avoidance (Capstone)',
-          status: day === 24 ? 'priority' : 'confirmed',
-          departmentCode: 'MECH',
-          studentName: 'Alex Rivera'
-        });
-
-        items.push({
-          id: `item_${day}_3`,
-          dateStr,
-          dayOfWeek,
-          startTime: '16:30',
-          endTime: '19:30',
-          labId: 'lab_ece_rf',
-          labName: 'RF & Microwave Wireless Communications',
-          roomNumber: 'Maxwell 202',
-          resourceId: 'res_rs_spectrum_01',
-          resourceName: 'Rohde & Schwarz 3GHz Spectrum Analyzer',
-          category: 'instrumentation',
-          projectTitle: 'Software-Defined Radio Spectral Purity',
-          status: 'open',
-          departmentCode: 'ECE'
-        });
-      }
-
-      // Saturday (Special fabrication & testing)
-      if (d.getDay() === 6) {
-        items.push({
-          id: `item_${day}_1`,
-          dateStr,
-          dayOfWeek,
-          startTime: '09:00',
-          endTime: '13:00',
-          labId: 'lab_mech_proto',
-          labName: 'Rapid Prototyping Workshop',
-          roomNumber: 'Tesla 105',
-          resourceId: 'res_haas_cnc_01',
-          resourceName: 'Haas Mini Mill 3-Axis CNC Center',
-          category: 'fabrication',
-          projectTitle: 'Weekend Capstone Milling Marathon',
-          status: 'open',
-          departmentCode: 'MECH'
-        });
-
-        items.push({
-          id: `item_${day}_2`,
-          dateStr,
-          dayOfWeek,
-          startTime: '14:00',
-          endTime: '18:00',
-          labId: 'lab_mech_proto',
-          labName: 'Rapid Prototyping Workshop',
-          roomNumber: 'Tesla 105',
-          resourceId: 'res_formlabs_3d_01',
-          resourceName: 'Formlabs Form 4 SLA 3D Resin Printer',
-          category: 'fabrication',
-          projectTitle: 'High-Tolerance SLA Enclosure Curing',
-          status: 'confirmed',
-          departmentCode: 'MECH',
-          studentName: 'Dev Sharma'
-        });
-      }
+      });
     }
+
     return items;
-  }, []);
+  }, [scenario.bookings, scenario.resources, scenario.labs]);
 
-  // Items for the selected day
-  const selectedDateStr = `2026-11-${String(selectedDayNumber).padStart(2, '0')}`;
-  const selectedDateObj = new Date(currentYear, currentMonth, selectedDayNumber);
-  const selectedDayName = selectedDateObj.toLocaleDateString('en-US', {
-    weekday: 'long',
-    month: 'short',
-    day: 'numeric'
-  });
-
-  const daySchedule = useMemo(() => {
+  // Filter items based on active criteria
+  const filteredSchedule = useMemo(() => {
     return allScheduleItems.filter((item) => {
-      const matchDate = item.dateStr === selectedDateStr;
       const matchLab = filterLab === 'all' || item.labId === filterLab;
-      return matchDate && matchLab;
+      const matchCategory = filterCategory === 'all' || item.category === filterCategory;
+      return matchLab && matchCategory;
     });
-  }, [allScheduleItems, selectedDateStr, filterLab]);
+  }, [allScheduleItems, filterLab, filterCategory]);
 
-  // Count items per day for monthly grid badges
+  // Selected date schedule
+  const selectedDateStr = `2026-11-${String(selectedDayNumber).padStart(2, '0')}`;
+  const daySchedule = useMemo(() => {
+    return filteredSchedule
+      .filter((item) => item.dateStr === selectedDateStr)
+      .sort((a, b) => a.startTime.localeCompare(b.startTime));
+  }, [filteredSchedule, selectedDateStr]);
+
+  const selectedDayName = useMemo(() => {
+    const d = new Date(2026, 10, selectedDayNumber);
+    return d.toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  }, [selectedDayNumber]);
+
+  // Aggregate stats per day of month
   const scheduleCountByDay = useMemo(() => {
-    const map = new Map<number, { total: number; open: number }>();
-    allScheduleItems.forEach((item) => {
+    const map = new Map<number, { total: number; open: number; confirmed: number }>();
+    filteredSchedule.forEach((item) => {
       const day = parseInt(item.dateStr.split('-')[2], 10);
-      const current = map.get(day) || { total: 0, open: 0 };
+      const current = map.get(day) || { total: 0, open: 0, confirmed: 0 };
       current.total += 1;
       if (item.status === 'open') current.open += 1;
+      if (item.status === 'confirmed') current.confirmed += 1;
       map.set(day, current);
     });
     return map;
-  }, [allScheduleItems]);
+  }, [filteredSchedule]);
 
   const handleClaimSlot = (item: DailyScheduleItem) => {
     navigate(
@@ -251,78 +182,87 @@ export function TimetablePage() {
             Laboratory Monthly Timetable
           </h1>
           <p className="text-sm text-ink-2 mt-1 max-w-2xl">
-            Select any day on the monthly calendar to inspect active research allocations, open walk-in benches, and scheduled laboratory sessions.
+            Select any day to inspect active research allocations, open walk-in benches, and scheduled laboratory sessions derived from the live scheduler.
           </p>
         </div>
 
-        {/* View Switcher & Facility Filter */}
-        <div className="flex items-center space-x-2 text-xs font-mono">
-          <button
-            type="button"
-            onClick={() => setViewMode('calendar')}
-            className={`px-3 py-1.5 border transition-colors ${
-              viewMode === 'calendar'
-                ? 'border-ink bg-ink text-paper font-semibold'
-                : 'border-rule hover:bg-tint text-ink'
-            }`}
-          >
-            Monthly Calendar
-          </button>
-          <button
-            type="button"
-            onClick={() => setViewMode('matrix')}
-            className={`px-3 py-1.5 border transition-colors ${
-              viewMode === 'matrix'
-                ? 'border-ink bg-ink text-paper font-semibold'
-                : 'border-rule hover:bg-tint text-ink'
-            }`}
-          >
-            All Sessions List
-          </button>
+        {/* View Switcher Tabs */}
+        <div className="flex items-center space-x-1 border border-rule p-0.5 bg-tint text-xs font-mono">
+          {(['month', 'day', 'agenda'] as const).map((mode) => (
+            <button
+              key={mode}
+              type="button"
+              onClick={() => setViewMode(mode)}
+              className={`px-3 py-1.5 uppercase font-medium transition-colors ${
+                viewMode === mode
+                  ? 'bg-ink text-paper font-bold shadow-xs'
+                  : 'text-ink-2 hover:text-ink'
+              }`}
+            >
+              {mode === 'month' ? 'Month Grid' : mode === 'day' ? 'Day Timeline' : 'Agenda View'}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Filter Bar */}
-      <div className="bg-tint/30 p-3 border border-rule flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono text-xs">
-        <div className="flex items-center space-x-2">
-          <span className="text-ink-3 text-[11px] uppercase">Filter by Facility:</span>
-          <select
-            value={filterLab}
-            onChange={(e) => setFilterLab(e.target.value)}
-            className="px-2.5 py-1 border border-rule bg-paper text-ink text-xs focus-visible:outline-none"
-          >
-            <option value="all">All University Laboratories</option>
-            {(scenario.labs || []).map((lab) => (
-              <option key={lab.id} value={lab.id}>
-                {lab.name} ({lab.roomNumber})
-              </option>
-            ))}
-          </select>
+      {/* Filter and Timezone Bar */}
+      <div className="bg-tint/30 p-3.5 border border-rule flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono text-xs">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center space-x-2">
+            <span className="text-ink-3 text-[11px] uppercase">Facility:</span>
+            <select
+              value={filterLab}
+              onChange={(e) => setFilterLab(e.target.value)}
+              className="px-2.5 py-1 border border-rule bg-paper text-ink text-xs focus-visible:outline-none"
+            >
+              <option value="all">All University Laboratories</option>
+              {(scenario.labs || []).map((lab) => (
+                <option key={lab.id} value={lab.id}>
+                  {lab.name} ({lab.roomNumber})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <span className="text-ink-3 text-[11px] uppercase">Category:</span>
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              className="px-2.5 py-1 border border-rule bg-paper text-ink text-xs focus-visible:outline-none"
+            >
+              <option value="all">All Equipment Types</option>
+              <option value="compute">Compute &amp; HPC</option>
+              <option value="embedded">Embedded &amp; FPGA</option>
+              <option value="instrumentation">RF &amp; Instrumentation</option>
+              <option value="fabrication">Prototyping &amp; CNC</option>
+            </select>
+          </div>
         </div>
 
         <div className="flex items-center space-x-3 text-xs text-ink-2">
-          <span className="flex items-center space-x-1">
-            <span className="w-2 h-2 bg-signal inline-block" />
+          <span className="flex items-center space-x-1.5">
+            <span className="w-2 h-2 bg-signal inline-block" aria-hidden="true" />
             <span>Open Bench</span>
           </span>
-          <span className="flex items-center space-x-1">
-            <span className="w-2 h-2 bg-ink inline-block" />
+          <span className="flex items-center space-x-1.5">
+            <span className="w-2 h-2 bg-ink inline-block" aria-hidden="true" />
             <span>Reserved Session</span>
           </span>
-          <span className="flex items-center space-x-1">
-            <span className="w-2 h-2 bg-amber-500 inline-block" />
-            <span>Capstone Focus</span>
+          <span className="text-ink-3 text-[11px] pl-2 border-l border-rule-soft">
+            Campus Standard Time: Asia/Kolkata
           </span>
         </div>
       </div>
 
-      {viewMode === 'calendar' ? (
+      {/* MONTH GRID VIEW */}
+      {viewMode === 'month' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Monthly Calendar View (7 cols) */}
+          {/* Calendar Grid (7 cols) */}
           <div className="lg:col-span-7 border border-rule bg-paper p-5 space-y-4">
             <div className="flex items-center justify-between border-b border-rule-soft pb-3 font-mono">
               <div className="flex items-center space-x-2">
-                <span className="w-2.5 h-2.5 bg-signal inline-block" />
+                <span className="w-2.5 h-2.5 bg-signal inline-block" aria-hidden="true" />
                 <h2 className="text-base font-bold text-ink tracking-tight uppercase">
                   {monthName}
                 </h2>
@@ -343,12 +283,10 @@ export function TimetablePage() {
 
             {/* Calendar Days Matrix */}
             <div className="grid grid-cols-7 gap-1.5 font-mono text-xs">
-              {/* Empty leading offset days (Sunday = 0) */}
               {Array.from({ length: startDayOfWeek }).map((_, idx) => (
                 <div key={`empty_${idx}`} className="h-20 border border-transparent bg-tint/10" />
               ))}
 
-              {/* Days 1 to 30 */}
               {Array.from({ length: totalDays }).map((_, idx) => {
                 const day = idx + 1;
                 const dateMeta = scheduleCountByDay.get(day);
@@ -382,7 +320,7 @@ export function TimetablePage() {
                     {dateMeta ? (
                       <div className="space-y-0.5">
                         <span className="text-[10px] text-ink-2 block truncate">
-                          {dateMeta.total} {dateMeta.total === 1 ? 'lab' : 'labs'}
+                          {dateMeta.total} {dateMeta.total === 1 ? 'slot' : 'slots'}
                         </span>
                         {dateMeta.open > 0 && (
                           <span className="text-[9px] text-signal font-bold block truncate">
@@ -399,7 +337,7 @@ export function TimetablePage() {
             </div>
           </div>
 
-          {/* Selected Day Timetable Schedule Detail (5 cols) */}
+          {/* Selected Day Timetable Detail (5 cols) */}
           <div className="lg:col-span-5 border border-rule bg-paper p-5 space-y-4">
             <div className="border-b border-rule-soft pb-3 flex items-start justify-between">
               <div>
@@ -451,32 +389,24 @@ export function TimetablePage() {
                       </p>
                     </div>
 
-                    {session.studentName && (
-                      <div className="text-[11px] font-mono text-ink-3">
-                        Student: <span className="font-semibold text-ink">{session.studentName}</span> ({session.departmentCode})
-                      </div>
-                    )}
-
-                    <div className="pt-2 border-t border-rule-soft flex items-center justify-between text-xs font-mono">
-                      <span className="text-[10px] text-ink-3 uppercase">
-                        Dept: {session.departmentCode}
+                    <div className="pt-2 border-t border-rule-soft flex items-center justify-between font-mono text-xs">
+                      <span className="text-ink-3 text-[11px]">
+                        DEPT: {session.departmentCode} • CAT: {session.category.toUpperCase()}
                       </span>
+
                       {session.status === 'open' ? (
                         <button
                           type="button"
                           onClick={() => handleClaimSlot(session)}
-                          className="px-3 py-1 bg-signal text-white font-bold hover:opacity-90 transition-opacity"
+                          className="px-3 py-1 bg-signal text-white font-bold uppercase text-[10px] hover:opacity-90 inline-flex items-center space-x-1"
                         >
-                          Book Slot →
+                          <span>Claim Slot</span>
+                          <span aria-hidden="true">&rarr;</span>
                         </button>
                       ) : (
-                        <button
-                          type="button"
-                          onClick={() => navigate(`/discover?search=${encodeURIComponent(session.resourceName)}`)}
-                          className="text-ink hover:underline text-[11px]"
-                        >
-                          Device Details →
-                        </button>
+                        <span className="text-[11px] text-ink-3">
+                          {session.studentName ? `Booked by ${session.studentName}` : 'Reserved'}
+                        </span>
                       )}
                     </div>
                   </div>
@@ -484,48 +414,128 @@ export function TimetablePage() {
               })}
 
               {daySchedule.length === 0 && (
-                <div className="p-8 border border-rule text-center bg-tint/10 font-mono text-xs text-ink-3">
-                  No laboratory sessions scheduled for {selectedDayName}. Campus labs operate Monday through Saturday.
+                <div className="p-8 border border-rule text-center bg-tint/10 font-mono text-xs text-ink-3 space-y-2">
+                  <span className="text-signal font-bold block">NO SCHEDULED EVENTS</span>
+                  <p>No active sessions or open benches recorded for {selectedDayName}.</p>
                 </div>
               )}
             </div>
           </div>
         </div>
-      ) : (
-        /* Matrix View of All Sessions */
-        <div className="border border-rule bg-paper p-5 space-y-4">
-          <div className="flex items-center justify-between border-b border-rule-soft pb-3 font-mono text-xs">
-            <h2 className="text-base font-bold text-ink">Master Month Schedule ({monthName})</h2>
-            <span className="text-ink-3">{allScheduleItems.length} total blocks</span>
+      )}
+
+      {/* DAY TIMELINE VIEW */}
+      {viewMode === 'day' && (
+        <div className="border border-rule bg-paper p-5 space-y-4 font-mono text-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-rule-soft pb-3">
+            <div>
+              <span className="text-signal font-bold uppercase text-[10px]">HOURLY FACILITY TIMELINE</span>
+              <h2 className="text-base font-bold text-ink mt-0.5">{selectedDayName} (08:00 – 20:00)</h2>
+            </div>
+            <div className="flex items-center space-x-2">
+              <button
+                type="button"
+                onClick={() => setSelectedDayNumber((p) => Math.max(1, p - 1))}
+                className="px-2 py-1 border border-rule hover:bg-tint"
+              >
+                &larr; Prev Day
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedDayNumber((p) => Math.min(totalDays, p + 1))}
+                className="px-2 py-1 border border-rule hover:bg-tint"
+              >
+                Next Day &rarr;
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {allScheduleItems
-              .filter((item) => filterLab === 'all' || item.labId === filterLab)
-              .map((item) => (
-                <div key={item.id} className="border border-rule p-3 space-y-2 bg-paper text-xs font-mono">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-ink">{item.dateStr} ({item.dayOfWeek})</span>
-                    <span className="text-signal font-semibold">{item.startTime}–{item.endTime}</span>
-                  </div>
-                  <div className="font-semibold text-ink truncate">{item.resourceName}</div>
-                  <div className="text-[11px] text-ink-3 truncate">{item.labName}</div>
-                  <div className="pt-2 border-t border-rule-soft flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold text-ink">{item.status}</span>
-                    {item.status === 'open' ? (
-                      <button
-                        type="button"
-                        onClick={() => handleClaimSlot(item)}
-                        className="text-signal font-bold hover:underline"
-                      >
-                        Claim Slot →
-                      </button>
+          <div className="space-y-2 pt-2">
+            {['08:00', '10:00', '12:00', '14:00', '16:00', '18:00'].map((hour) => {
+              const matchedSessions = daySchedule.filter(
+                (s) => s.startTime <= hour && s.endTime > hour
+              );
+
+              return (
+                <div key={hour} className="grid grid-cols-12 gap-3 p-3 border border-rule-soft bg-tint/20 items-center">
+                  <div className="col-span-2 font-bold text-ink text-sm">{hour}</div>
+                  <div className="col-span-10 flex flex-wrap gap-2">
+                    {matchedSessions.length > 0 ? (
+                      matchedSessions.map((s) => (
+                        <div
+                          key={s.id}
+                          className={`p-2 border text-xs flex-1 min-w-[200px] ${
+                            s.status === 'open'
+                              ? 'border-signal bg-signal/10 text-signal font-bold'
+                              : 'border-ink bg-paper text-ink'
+                          }`}
+                        >
+                          <div className="flex justify-between items-center">
+                            <span>{s.resourceName}</span>
+                            <span>{s.startTime}–{s.endTime}</span>
+                          </div>
+                          <span className="text-[10px] text-ink-3 block mt-0.5">{s.roomNumber} • {s.projectTitle}</span>
+                        </div>
+                      ))
                     ) : (
-                      <span className="text-ink-3">{item.studentName || 'Reserved'}</span>
+                      <span className="text-ink-3 text-xs italic py-1">Open facility capacity across laboratories</span>
                     )}
                   </div>
                 </div>
-              ))}
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* AGENDA LIST VIEW */}
+      {viewMode === 'agenda' && (
+        <div className="border border-rule bg-paper p-5 space-y-4 font-mono text-xs">
+          <div className="flex items-center justify-between border-b border-rule-soft pb-3">
+            <h2 className="text-base font-bold text-ink uppercase">
+              Chronological Agenda ({filteredSchedule.length} Sessions across November)
+            </h2>
+            <span className="text-ink-3 text-xs">Zero double-bookings</span>
+          </div>
+
+          <div className="space-y-2 max-h-[700px] overflow-y-auto pr-1">
+            {filteredSchedule.map((item) => (
+              <div
+                key={item.id}
+                className="p-3 border border-rule flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-ink transition-colors"
+              >
+                <div className="space-y-1">
+                  <div className="flex items-center space-x-2">
+                    <span className="font-bold text-ink">{item.dateStr}</span>
+                    <span className="text-ink-3">({item.dayOfWeek})</span>
+                    <span className="text-signal font-semibold">{item.startTime} — {item.endTime}</span>
+                  </div>
+                  <div className="text-sm font-bold text-ink">{item.resourceName}</div>
+                  <div className="text-ink-3 text-[11px]">{item.labName} • {item.roomNumber}</div>
+                </div>
+
+                <div className="flex items-center space-x-3 shrink-0">
+                  <span
+                    className={`px-2 py-0.5 border text-[10px] uppercase font-bold ${
+                      item.status === 'open'
+                        ? 'border-signal bg-signal text-white'
+                        : 'border-ink bg-tint text-ink'
+                    }`}
+                  >
+                    {item.status}
+                  </span>
+                  {item.status === 'open' && (
+                    <button
+                      type="button"
+                      onClick={() => handleClaimSlot(item)}
+                      className="px-3 py-1 bg-ink text-paper hover:bg-signal font-semibold text-[10px] uppercase"
+                    >
+                      Book &rarr;
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}

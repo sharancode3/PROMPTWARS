@@ -140,6 +140,112 @@ export function InsightsPage() {
         </div>
       </div>
 
+      {/* Visual Analytics Strip: Weekly Load Area & Efficiency Donut Gauge */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        {/* Weekly Load SVG Area Chart */}
+        <div className="lg:col-span-2 border border-rule bg-paper p-5 space-y-3">
+          <div className="flex items-center justify-between border-b border-rule-soft pb-2 font-mono text-xs">
+            <div>
+              <span className="font-bold text-ink block">Weekly Campus Load Curve</span>
+              <span className="text-[11px] text-ink-3">Total Equipment Hours Booked (Mon – Sat)</span>
+            </div>
+            <span className="text-signal font-semibold">Peak: Tuesday (88h)</span>
+          </div>
+
+          {/* Pure SVG Line & Area Chart */}
+          <div className="w-full h-44 pt-2">
+            <svg viewBox="0 0 600 160" className="w-full h-full overflow-visible font-mono text-[10px]">
+              {/* Horizontal Grid lines */}
+              <line x1="40" y1="20" x2="580" y2="20" stroke="currentColor" strokeOpacity="0.1" strokeDasharray="3 3" />
+              <line x1="40" y1="60" x2="580" y2="60" stroke="currentColor" strokeOpacity="0.1" strokeDasharray="3 3" />
+              <line x1="40" y1="100" x2="580" y2="100" stroke="currentColor" strokeOpacity="0.1" strokeDasharray="3 3" />
+              <line x1="40" y1="140" x2="580" y2="140" stroke="currentColor" strokeOpacity="0.3" />
+
+              {/* Y-Axis Labels */}
+              <text x="10" y="24" fill="currentColor" opacity="0.6">100h</text>
+              <text x="15" y="64" fill="currentColor" opacity="0.6">75h</text>
+              <text x="15" y="104" fill="currentColor" opacity="0.6">50h</text>
+              <text x="15" y="144" fill="currentColor" opacity="0.6">25h</text>
+
+              {/* Area fill */}
+              <polygon
+                points="60,140 60,70 160,35 260,50 360,40 460,85 560,110 560,140"
+                fill="#C00018"
+                fillOpacity="0.15"
+              />
+
+              {/* Stroke line */}
+              <polyline
+                points="60,70 160,35 260,50 360,40 460,85 560,110"
+                fill="none"
+                stroke="#C00018"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              {/* Data points */}
+              <circle cx="60" cy="70" r="4" fill="#0A0A0A" />
+              <circle cx="160" cy="35" r="5" fill="#C00018" />
+              <circle cx="260" cy="50" r="4" fill="#0A0A0A" />
+              <circle cx="360" cy="40" r="4" fill="#0A0A0A" />
+              <circle cx="460" cy="85" r="4" fill="#0A0A0A" />
+              <circle cx="560" cy="110" r="4" fill="#0A0A0A" />
+
+              {/* X-Axis Day Labels */}
+              <text x="50" y="156" fill="currentColor" opacity="0.8">MON</text>
+              <text x="150" y="156" fill="currentColor" opacity="0.8" fontWeight="bold">TUE (Peak)</text>
+              <text x="250" y="156" fill="currentColor" opacity="0.8">WED</text>
+              <text x="350" y="156" fill="currentColor" opacity="0.8">THU</text>
+              <text x="450" y="156" fill="currentColor" opacity="0.8">FRI</text>
+              <text x="550" y="156" fill="currentColor" opacity="0.8">SAT</text>
+            </svg>
+          </div>
+        </div>
+
+        {/* Institutional Efficiency Donut Gauge */}
+        <div className="border border-rule bg-paper p-5 flex flex-col justify-between font-mono text-xs">
+          <div className="border-b border-rule-soft pb-2">
+            <span className="font-bold text-ink block">Fairness & Efficiency Index</span>
+            <span className="text-[11px] text-ink-3">Deterministic Arbitration Score</span>
+          </div>
+
+          <div className="flex flex-col items-center justify-center py-2">
+            <div className="relative w-28 h-28 flex items-center justify-center">
+              <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeOpacity="0.1" strokeWidth="10" />
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  fill="none"
+                  stroke="#C00018"
+                  strokeWidth="10"
+                  strokeDasharray="251.2"
+                  strokeDashoffset="65"
+                  strokeLinecap="butt"
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                <span className="text-xl font-bold font-mono text-ink">74.2%</span>
+                <span className="text-[9px] uppercase tracking-wider text-ink-3">OPTIMAL</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-2 border-t border-rule-soft space-y-1 text-[11px] text-ink-2">
+            <div className="flex justify-between">
+              <span>Zero Hoarding Rate</span>
+              <strong className="text-ink">100%</strong>
+            </div>
+            <div className="flex justify-between">
+              <span>Waitlist Turnaround</span>
+              <strong className="text-ink">&lt; 24h</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Resource Utilisation SVG Chart */}
       <div className="border border-rule bg-paper p-5 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-rule-soft pb-3">

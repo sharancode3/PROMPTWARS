@@ -13,6 +13,11 @@ export function DiscoverPage() {
   const [selectedDept, setSelectedDept] = useState<string>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [focusedResource, setFocusedResource] = useState<Resource | null>(null);
+  const [expandedSpecsId, setExpandedSpecsId] = useState<string | null>(null);
+
+  const toggleExpandSpecs = (id: string) => {
+    setExpandedSpecsId(expandedSpecsId === id ? null : id);
+  };
 
   // Close focused panel on Escape
   useEffect(() => {
@@ -216,98 +221,136 @@ export function DiscoverPage() {
       </div>
 
       {/* Grid of Equipment Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {filteredResources.map((res: Resource) => {
           const requiresCerts = res.requiresCertification || [];
           const userHasCerts = requiresCerts.every((c) =>
             currentUser.certifications?.includes(c)
           );
+          const isExpanded = expandedSpecsId === res.id;
+
+          const categoryIcons: Record<string, JSX.Element> = {
+            compute: (
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="4" y="4" width="16" height="16" rx="2" />
+                <rect x="9" y="9" width="6" height="6" />
+                <line x1="9" y1="1" x2="9" y2="4" /><line x1="15" y1="1" x2="15" y2="4" />
+                <line x1="9" y1="20" x2="9" y2="23" /><line x1="15" y1="20" x2="15" y2="23" />
+                <line x1="20" y1="9" x2="23" y2="9" /><line x1="20" y1="15" x2="23" y2="15" />
+                <line x1="1" y1="9" x2="4" y2="9" /><line x1="1" y1="15" x2="4" y2="15" />
+              </svg>
+            ),
+            instrumentation: (
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+              </svg>
+            ),
+            embedded: (
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="2" y="2" width="20" height="20" rx="2" />
+                <path d="M7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 17h5M17 7h5" />
+              </svg>
+            ),
+            fabrication: (
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                <line x1="12" y1="22.08" x2="12" y2="12" />
+              </svg>
+            )
+          };
+
+          const icon = categoryIcons[res.category] || categoryIcons.compute;
 
           return (
             <div
               key={res.id}
-              className="border border-rule bg-paper p-6 space-y-4 hover:border-signal transition-colors flex flex-col justify-between"
+              className="border border-rule bg-paper p-5 space-y-3.5 hover:border-ink transition-colors flex flex-col justify-between shadow-2xs"
             >
-              <div className="space-y-3">
+              <div className="space-y-2.5">
+                {/* Header Tag + Status */}
                 <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-ink-3 block">
+                  <div className="flex items-center space-x-2">
+                    <span className="p-1 border border-rule-soft bg-tint text-ink flex items-center justify-center">
+                      {icon}
+                    </span>
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-signal font-semibold">
                       {res.category} &bull; {res.departmentId.replace('dept_', '').toUpperCase()}
                     </span>
-                    <h3 className="font-bold text-lg text-ink leading-tight mt-0.5">
-                      {res.name}
-                    </h3>
                   </div>
                   <StatusGlyph status={res.status === 'available' ? 'available' : 'maintenance'} />
                 </div>
 
-                <p className="text-xs text-ink-2 leading-relaxed">
-                  {res.description}
-                </p>
+                {/* Device Title */}
+                <h3 className="font-bold text-base text-ink leading-snug">
+                  {res.name}
+                </h3>
 
-                {/* Specs Box */}
-                <div className="bg-tint border border-rule-soft p-2.5 font-mono text-[11px] grid grid-cols-2 gap-x-4 gap-y-1">
-                  {Object.entries(res.specs || {}).map(([k, v]) => (
-                    <div key={k} className="truncate">
-                      <span className="text-ink-3">{k}: </span>
-                      <span className="font-semibold text-ink">{String(v)}</span>
-                    </div>
-                  ))}
-                  <div>
-                    <span className="text-ink-3">Max Session: </span>
-                    <span className="font-semibold text-ink">{res.maxSessionMinutes} min</span>
-                  </div>
-                  <div>
-                    <span className="text-ink-3">Safety Buffer: </span>
-                    <span className="font-semibold text-ink">{res.bufferMinutes} min</span>
-                  </div>
+                {/* Concise Location & Quick Spec Pills */}
+                <div className="flex flex-wrap items-center gap-1.5 font-mono text-[11px]">
+                  <span className="px-2 py-0.5 border border-rule-soft bg-tint text-ink-2">
+                    📍 {res.location.split(' - ')[1] || res.location}
+                  </span>
+                  <span className="px-2 py-0.5 border border-rule-soft bg-tint text-ink-2">
+                    ⏱ {res.maxSessionMinutes}m max
+                  </span>
+                  <span className="px-2 py-0.5 border border-rule-soft bg-tint text-ink-2">
+                    🛡 {res.bufferMinutes}m buffer
+                  </span>
                 </div>
 
-                {/* Location & Certifications */}
-                <div className="space-y-1.5 text-xs font-mono">
-                  <div className="text-ink-2 flex items-center space-x-1">
-                    <span className="text-ink-3">Location:</span>
-                    <span>{res.location}</span>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="text-ink-3">Prerequisites:</span>
-                    {requiresCerts.length > 0 ? (
-                      requiresCerts.map((c) => (
-                        <span
-                          key={c}
-                          className={`px-1.5 py-0.5 text-[10px] border ${
-                            currentUser.certifications?.includes(c)
-                              ? 'border-emerald-500 bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200'
-                              : 'border-red-400 bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-200'
-                          }`}
-                        >
-                          {c} {currentUser.certifications?.includes(c) ? '✓' : '✗ Required'}
+                {/* Expandable Specifications Toggle */}
+                <div className="pt-1">
+                  <button
+                    type="button"
+                    onClick={() => toggleExpandSpecs(res.id)}
+                    className="text-[11px] font-mono text-ink-3 hover:text-signal flex items-center space-x-1 transition-colors focus-visible:outline-none"
+                  >
+                    <span>{isExpanded ? 'Hide Specifications' : 'View Full Specifications & Prereqs'}</span>
+                    <span>{isExpanded ? '▲' : '▾'}</span>
+                  </button>
+
+                  {/* Expanded Content Box */}
+                  {isExpanded && (
+                    <div className="mt-2.5 space-y-2.5 animate-fadeIn">
+                      <p className="text-xs text-ink-2 leading-relaxed bg-tint/20 p-2.5 border border-rule-soft">
+                        {res.description}
+                      </p>
+
+                      <div className="bg-tint border border-rule-soft p-2.5 font-mono text-[11px] grid grid-cols-2 gap-x-3 gap-y-1">
+                        {Object.entries(res.specs || {}).map(([k, v]) => (
+                          <div key={k} className="truncate">
+                            <span className="text-ink-3">{k}: </span>
+                            <span className="font-semibold text-ink">{String(v)}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="text-[11px] font-mono flex items-center justify-between p-2 border border-rule-soft bg-paper">
+                        <span className="text-ink-3">Safety Prerequisite:</span>
+                        <span className={userHasCerts ? "text-emerald-700 font-semibold" : "text-signal font-semibold"}>
+                          {requiresCerts.length > 0
+                            ? requiresCerts.map((c) => `${c} ${currentUser.certifications?.includes(c) ? '✓' : '✗'}`).join(', ')
+                            : 'Open to all students ✓'}
                         </span>
-                      ))
-                    ) : (
-                      <span className="text-ink-3">None (Open to all students)</span>
-                    )}
-                  </div>
-                  <div className="text-[11px] text-ink-3 pt-0.5">
-                    Eligibility: <span className={userHasCerts ? "text-emerald-700 font-semibold" : "text-signal font-semibold"}>
-                      {userHasCerts ? "Prerequisites Met ✓" : "Safety Certification Required"}
-                    </span>
-                  </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-3 border-t border-rule-soft flex flex-wrap items-center justify-between gap-2">
+              <div className="pt-3 border-t border-rule-soft flex items-center justify-between gap-2 font-mono text-xs">
                 <button
                   type="button"
                   onClick={() => setFocusedResource(res)}
-                  className="text-xs font-mono text-ink hover:text-signal underline font-semibold focus-visible:outline-none"
+                  className="text-ink hover:text-signal underline font-semibold focus-visible:outline-none text-[11px]"
                 >
-                  View Feasible Slots &rarr;
+                  Inspect Feasible Slots &rarr;
                 </button>
                 <button
                   onClick={() => navigate(`/request?resourceId=${res.id}`)}
-                  className="bg-ink hover:bg-signal text-paper px-4 py-2 text-xs font-mono font-semibold uppercase transition-colors"
+                  className="bg-ink hover:bg-signal text-paper px-3.5 py-1.5 text-xs font-semibold uppercase transition-colors"
                 >
                   Request Slot &rarr;
                 </button>

@@ -20,11 +20,16 @@ import { SettingsPage } from './pages/SettingsPage.js';
 export default function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   const toggleTheme = () => {
     const next = theme === 'light' ? 'dark' : 'light';
     setTheme(next);
     document.documentElement.setAttribute('data-theme', next);
+  };
+
+  const toggleSidebarCollapse = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed);
   };
 
   return (
@@ -43,10 +48,12 @@ export default function App() {
           <Sidebar
             isOpen={isSidebarOpen}
             onClose={() => setIsSidebarOpen(false)}
+            isCollapsed={isSidebarCollapsed}
+            onToggleCollapse={toggleSidebarCollapse}
           />
 
-          {/* Main Content Area (offset by sidebar width on large screens) */}
-          <div className="lg:pl-64 flex flex-col flex-1 min-w-0">
+          {/* Main Content Area (dynamically offset by sidebar width) */}
+          <div className={`${isSidebarCollapsed ? 'lg:pl-16' : 'lg:pl-64'} flex flex-col flex-1 min-w-0 transition-all duration-200`}>
             <Header
               theme={theme}
               toggleTheme={toggleTheme}

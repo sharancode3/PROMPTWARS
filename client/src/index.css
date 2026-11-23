@@ -3,34 +3,34 @@
 @tailwind utilities;
 
 :root {
-  --paper: #FAFAF7;
-  --ink: #0A0A0A;
-  --ink-2: #3B3B38;
-  --ink-3: #5E5E59;
-  --rule: #0A0A0A;
-  --rule-soft: #D6D6D0;
-  --tint: #EFEFEA;
+  --paper: #FBFBFA;
+  --ink: #111111;
+  --ink-2: #3E3E3A;
+  --ink-3: #6B6B65;
+  --rule: #2E2E2A;
+  --rule-soft: #E2E2DC;
+  --tint: #F2F2ED;
   --signal: #C00018;
   --signal-ink: #FFFFFF;
   --cobalt: #1F3FD6;
-  --amber: #FFC400;
-  --forest: #0B6B3A;
-  --focus: #0A0A0A;
+  --amber: #D97706;
+  --forest: #059669;
+  --focus: #111111;
 }
 
 [data-theme="dark"], [data-surface="inverted"] {
-  --paper: #0A0A0A;
-  --ink: #F4F4EF;
-  --ink-2: #C9C9C2;
-  --ink-3: #A3A39C;
-  --rule: #F4F4EF;
-  --rule-soft: #34342F;
-  --tint: #171715;
-  --signal: #FF5468;
-  --cobalt: #8FA2FF;
-  --forest: #4ADE9A;
-  --amber: #FFC400;
-  --focus: #F4F4EF;
+  --paper: #121212;
+  --ink: #F2F2EC;
+  --ink-2: #D1D1C7;
+  --ink-3: #9E9E94;
+  --rule: #484842;
+  --rule-soft: #282824;
+  --tint: #1C1C19;
+  --signal: #FF4A5F;
+  --cobalt: #7B93FF;
+  --forest: #34D399;
+  --amber: #FBBF24;
+  --focus: #F2F2EC;
 }
 
 body {

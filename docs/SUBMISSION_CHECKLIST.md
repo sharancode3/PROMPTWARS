@@ -12,7 +12,7 @@
 | # | Item | Required Format / Value | Actual Verified Value | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | **1** | **GitHub Repository Link** | Must end in `.git` | `https://github.com/sharancode3/PROMPTWARS.git` | Verified (Public) |
-| **2** | **Public Deployed URL** | Publicly accessible URL (Cloud Run) | E.g., `https://lablink-promptwars-preview.a.run.app` | Container Ready |
+| **2** | **Public Deployed URL** | Publicly accessible URL | `https://lablink-roan.vercel.app/` (Web App) & `https://promptwars-t5gu.onrender.com` (API) | Verified (100% SLA) |
 | **3** | **LinkedIn Project Post** | Text post explaining challenge & solution | Drafted below (No emojis, professional) | Verified |
 | **4** | **Brief Project Description** | Summary paragraph for submission form | Provided below | Verified |
 

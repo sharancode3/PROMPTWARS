@@ -1,9 +1,9 @@
-# LabLink: Campus Laboratory Resource-Sharing Platform
+# LabLink: Making College Laboratories More Accessible & Efficient
 
 <div align="center">
 
 **Shared labs, fairly allocated.**  
-*A GenAI-powered campus resource-sharing platform built for PromptWars by Cynergy Coding Club × Google for Developers.*
+*Official Submission for Challenge: "LabLink — Making College Laboratories More Accessible & Efficient" (Cynergy Coding Club × Google for Developers / Build with AI / H2S)*
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.3-61dafb?style=flat-square&logo=react&logoColor=black)](https://react.dev/)

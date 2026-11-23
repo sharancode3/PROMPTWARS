@@ -423,7 +423,7 @@ export function DiscoverPage() {
                               Locked
                             </span>
                           ) : (
-                            <StatusGlyph status={slot.status as any} />
+                            <StatusGlyph status={slot.status} />
                           )}
                         </div>
                         <div className="text-sm font-semibold mt-1">

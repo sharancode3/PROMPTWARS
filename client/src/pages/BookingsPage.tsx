@@ -436,7 +436,7 @@ export function BookingsPage() {
               </label>
               <select
                 value={fbCondition}
-                onChange={(e) => setFbCondition(e.target.value as any)}
+                onChange={(e) => setFbCondition(e.target.value as 'operational' | 'needs-cleaning' | 'calibration-drift' | 'hardware-issue')}
                 className="w-full px-3 py-2 border border-rule bg-paper text-ink"
               >
                 <option value="operational">Operational — Nominal Performance</option>

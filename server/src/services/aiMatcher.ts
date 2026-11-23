@@ -150,7 +150,7 @@ Return ONLY valid JSON matching this structure:
       ]
     });
 
-    const response: any = await Promise.race([apiPromise, timeoutPromise]);
+    const response = (await Promise.race([apiPromise, timeoutPromise])) as { text?: string };
     const responseText = response.text || '';
     
     // Parse JSON from response

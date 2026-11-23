@@ -245,7 +245,7 @@ export function ConflictCenterPage() {
                     <td className="p-2.5 font-bold text-ink">{priorHours} hrs</td>
                     <td className="p-2.5 text-emerald-700 font-semibold">Pass ✓</td>
                     <td className="p-2.5">
-                      <StatusGlyph status={req.status as any} />
+                      <StatusGlyph status={req.status} />
                     </td>
                   </tr>
                 );

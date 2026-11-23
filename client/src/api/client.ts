@@ -372,7 +372,7 @@ export async function submitFacultyDecision(params: {
     if (b.requestId === params.requestId) {
       return {
         ...b,
-        status: (params.decision === 'approve' ? 'confirmed' : 'cancelled') as any
+        status: (params.decision === 'approve' ? 'confirmed' : 'cancelled') as 'confirmed' | 'cancelled'
       };
     }
     return b;

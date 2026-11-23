@@ -6,7 +6,8 @@ import {
   AccessRequestSchema,
   AllocationProposalSchema,
   ApprovalDecisionSchema,
-  Resource
+  Resource,
+  CapabilityTag
 } from 'shared';
 import { arbitrateSlotConflict } from '../domain/scheduler.js';
 import {
@@ -64,7 +65,7 @@ apiRouter.get('/resources', (req: Request, res: Response) => {
     resources = resources.filter((r) => r.category === category);
   }
   if (capability && typeof capability === 'string') {
-    resources = resources.filter((r) => r.capabilityTags.includes(capability as any));
+    resources = resources.filter((r) => r.capabilityTags.includes(capability as CapabilityTag));
   }
   if (q && typeof q === 'string') {
     const query = q.toLowerCase();

@@ -123,7 +123,7 @@ export function ApprovalsPage() {
                         <span className="font-mono text-xs font-bold text-ink">
                           {req.studentName}
                         </span>
-                        <StatusGlyph status={req.status as any} />
+                        <StatusGlyph status={req.status} />
                       </div>
                       <h3 className="text-lg font-bold text-ink">{req.title}</h3>
                       <div className="text-xs font-mono text-ink-3">

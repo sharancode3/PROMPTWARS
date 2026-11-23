@@ -1,4 +1,4 @@
-import { Resource, User, Booking } from 'shared';
+import { Resource, User, Booking, CapabilityTag } from 'shared';
 
 export interface TimeInterval {
   date: string;       // YYYY-MM-DD
@@ -69,7 +69,7 @@ export function checkSlotFeasibility(params: {
   // 1. Check capability match (if specified)
   if (requiredCapabilities.length > 0) {
     const hasAll = requiredCapabilities.every((cap) =>
-      resource.capabilityTags.includes(cap as any)
+      resource.capabilityTags.includes(cap as CapabilityTag)
     );
     if (!hasAll) {
       return {

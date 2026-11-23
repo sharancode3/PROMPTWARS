@@ -23,8 +23,15 @@ app.use(express.json({ limit: '1mb' }));
 app.use('/api/v1', apiRouter);
 
 // Serve static frontend in production if built
-const clientDistPath = path.resolve(__dirname, '../../client/dist');
-if (fs.existsSync(clientDistPath)) {
+const candidateDistPaths = [
+  path.resolve(__dirname, '../../client/dist'),
+  path.resolve(process.cwd(), 'client/dist'),
+  path.resolve(process.cwd(), '../client/dist'),
+  path.resolve(__dirname, '../client/dist')
+];
+const clientDistPath = candidateDistPaths.find((p) => fs.existsSync(p));
+
+if (clientDistPath) {
   app.use(express.static(clientDistPath));
   app.get('*', (req: Request, res: Response, next) => {
     if (req.path.startsWith('/api')) {

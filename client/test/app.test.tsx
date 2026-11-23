@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 import App from '../src/App.js';
 
-describe('App Root Component', () => {
+describe('App Root Component & Navigation', () => {
   it('renders LabLink brand and tagline', () => {
     render(<App />);
     expect(screen.getByText('LabLink')).toBeDefined();
@@ -15,5 +15,20 @@ describe('App Root Component', () => {
     expect(screen.getByRole('button', { name: /student/i })).toBeDefined();
     expect(screen.getByRole('button', { name: /faculty/i })).toBeDefined();
     expect(screen.getByRole('button', { name: /admin/i })).toBeDefined();
+  });
+
+  it('renders 60-second evaluator CTA for the conflict demo', () => {
+    render(<App />);
+    expect(screen.getByRole('button', { name: /run the conflict demo/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /discover equipment/i })).toBeDefined();
+  });
+
+  it('renders all 5 core navigation landmarks', () => {
+    render(<App />);
+    expect(screen.getByText('01 HOME')).toBeDefined();
+    expect(screen.getByText('02 DISCOVER')).toBeDefined();
+    expect(screen.getByText('03 REQUEST')).toBeDefined();
+    expect(screen.getByText('04 CONFLICTS')).toBeDefined();
+    expect(screen.getByText('05 APPROVALS')).toBeDefined();
   });
 });
